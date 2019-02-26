@@ -1,0 +1,93 @@
+{
+  "name": "benignware/wp-kicks-app",
+  "version": "0.1.0",
+  "type": "wordpress-theme",
+  "license": "MIT",
+  "description": "Wordpress theme",
+  "homepage": "http://github.com/benignware-labs/wp-kicks-app",
+  "authors": [
+    {
+      "name": "Rafael Nowrotek",
+      "email": "mail@benignware.com",
+      "homepage": "https://github.com/benignware"
+    }
+  ],
+  "keywords": [
+    "wordpress", "wordpress-theme", "bootstrap"
+  ],
+  "support": {
+    "issues": "https://github.com/benignware-labs/wp-kicks-app/issues"
+  },
+  "config": {
+    "vendor-dir": "vendor/lib"
+  },
+  "repositories": [{
+    "type": "composer",
+    "url": "https://wpackagist.org"
+  }, {
+    "type":"package",
+    "package": {
+      "name": "wptrt/theme-unit-test",
+      "version": "master",
+      "source": {
+        "url": "https://github.com/WPTRT/theme-unit-test.git",
+        "type": "git",
+        "reference": "master"
+      }
+    }
+  }, {
+    "type": "package",
+    "package": {
+      "name": "benignware/bootstrap-hooks",
+      "version": "v0.1.0-beta.7",
+      "type": "wordpress-muplugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/benignware/wp-bootstrap-hooks.git",
+        "reference": "v0.1.0-beta.7"
+      }
+    }
+  }, {
+    "type": "package",
+    "package": {
+      "name": "benignware/sticky-widget-area",
+      "version": "v0.0.5",
+      "type": "wordpress-plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/benignware-labs/wp-sticky-widget-area.git",
+        "reference": "v0.0.5"
+      }
+    }
+  }],
+  "require": {
+    "php": ">=5.3.0",
+    "composer/installers": "~1.0"
+  },
+  "require-dev": {
+    "wptrt/theme-unit-test": "dev-master",
+    "wemakecustom/wp-mu-loader": "*",
+    "benignware/bootstrap-hooks": ">=0.1.0-beta.7",
+    "benignware/sticky-widget-area": ">=0.0.5"
+  },
+  "scripts": {
+    "post-autoload-dump": [
+      "php -r \"copy('wp-content/mu-plugins/mu-loader/mu-require.php', 'wp-content/mu-plugins/mu-require.php');\""
+    ]
+  },
+  "extra": {
+    "webroot-dir": "wp-core",
+  	"webroot-package": "wordpress",
+    "installer-paths": {
+      "wp-content/plugins/{$name}/": [
+        "type:wordpress-plugin"
+      ],
+      "wp-content/mu-plugins/{$name}/": [
+        "type:wordpress-muplugin"
+      ],
+      "wp-content/themes/{$name}/": [
+        "type:wordpress-theme"
+      ]
+    }
+  }
+}

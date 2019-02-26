@@ -1,0 +1,33 @@
+# Mac OS
+.DS_Store
+
+# Node
+node_modules
+**/node_modules
+npm-debug.log
+
+# Composer
+vendor
+composer.phar
+
+# Wordpress
+wp-core
+wp-content/*
+!wp-content/themes
+wp-content/themes/twentyfifteen
+wp-content/themes/twentysixteen
+wp-content/themes/twentyseventeen
+wp-content/themes/twentynineteen
+wp-content/themes/index.php
+
+# PHPLoy
+phploy.phar
+deploy.ini
+phploy.ini
+
+# Env Files
+.env-*
+.env
+
+# Include sample files
+!/*-sample

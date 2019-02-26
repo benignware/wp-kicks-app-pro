@@ -1,0 +1,10 @@
+.widget {
+  &-area {
+    @include media-breakpoint-up(lg) {
+      width: 33.3333%;
+    }
+    > * {
+      margin-bottom: 0 !important !important;
+    }
+  }
+}

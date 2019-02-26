@@ -1,0 +1,14 @@
+.custom-header {
+  height: 100vh;
+  position: relative;
+
+  &-media {
+    outline: 1px solid green;
+    height: 100%;
+    display: flex;
+  }
+
+  &-image {
+    height: 100%;
+  }
+}

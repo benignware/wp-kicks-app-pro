@@ -1,0 +1,8 @@
+.content {
+  &-area {
+    @include media-breakpoint-up(lg) {
+      width: 66.6666%;
+      padding-right: $grid-gutter-width/2;
+    }
+  }
+}

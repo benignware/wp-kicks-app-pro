@@ -1,0 +1,17 @@
+.navigation {
+  &-primary {
+    &.sticky-top,
+    &.fixed-top {
+      .admin-bar & {
+        top: 32px;
+        @media screen and (max-width: 783px) {
+          top: 46px;
+        }
+        @media screen and (max-width: 600px) {
+          position: sticky;
+          top: 0;
+        }
+      }
+    }
+  }
+}
