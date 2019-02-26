@@ -39,12 +39,12 @@
     "type": "package",
     "package": {
       "name": "benignware/bootstrap-hooks",
-      "version": "v0.1.0-beta.7",
+      "version": "v0.1.0-beta.8",
       "type": "wordpress-muplugin",
       "source": {
         "type": "git",
         "url": "https://github.com/benignware/wp-bootstrap-hooks.git",
-        "reference": "v0.1.0-beta.7"
+        "reference": "v0.1.0-beta.8"
       }
     }
   }, {
@@ -67,7 +67,7 @@
   "require-dev": {
     "wptrt/theme-unit-test": "dev-master",
     "wemakecustom/wp-mu-loader": "*",
-    "benignware/bootstrap-hooks": ">=0.1.0-beta.7",
+    "benignware/bootstrap-hooks": ">=0.1.0-beta.8",
     "benignware/sticky-widget-area": ">=0.0.5"
   },
   "scripts": {
