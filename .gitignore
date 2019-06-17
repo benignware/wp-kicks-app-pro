@@ -6,28 +6,22 @@ node_modules
 **/node_modules
 npm-debug.log
 
-# Composer
+# PHP
 vendor
 composer.phar
 
-# Wordpress
-wp-core
-wp-content/*
-!wp-content/themes
-wp-content/themes/twentyfifteen
-wp-content/themes/twentysixteen
-wp-content/themes/twentyseventeen
-wp-content/themes/twentynineteen
-wp-content/themes/index.php
-
-# PHPLoy
-phploy.phar
-deploy.ini
-phploy.ini
+# Temp Dir
+tmp
+temp
 
 # Env Files
 .env-*
 .env
+!.env-sample
 
-# Include sample files
-!/*-sample
+# Wordpress
+wp-config-*
+wp-config
+.plugins
+.mu-plugins
+.uploads

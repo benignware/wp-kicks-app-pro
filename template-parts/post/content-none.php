@@ -2,7 +2,7 @@
 /**
  * Template part for displaying a message that posts cannot be found
  *
- * @link https://codex.wordpress.org/Template_Hierarchy
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
  * @package WordPress
  * @subpackage Twenty_Seventeen
@@ -14,20 +14,22 @@
 
 <section class="no-results not-found">
 	<header class="page-header">
-		<h1 class="page-title"><?php _e( 'Nothing Found', 'kicks_app' ); ?></h1>
+		<h1 class="page-title"><?php _e( 'Nothing Found', 'twentyseventeen' ); ?></h1>
 	</header>
 	<div class="page-content">
 		<?php
-		if ( is_home() && current_user_can( 'publish_posts' ) ) : ?>
+		if ( is_home() && current_user_can( 'publish_posts' ) ) :
+			?>
 
-			<p><?php printf( __( 'Ready to publish your first post? <a href="%1$s">Get started here</a>.', 'kicks_app' ), esc_url( admin_url( 'post-new.php' ) ) ); ?></p>
+			<p><?php printf( __( 'Ready to publish your first post? <a href="%1$s">Get started here</a>.', 'twentyseventeen' ), esc_url( admin_url( 'post-new.php' ) ) ); ?></p>
 
 		<?php else : ?>
 
-			<p><?php _e( 'It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help.', 'kicks_app' ); ?></p>
+			<p><?php _e( 'It seems we can&rsquo;t find what you&rsquo;re looking for. Perhaps searching can help.', 'twentyseventeen' ); ?></p>
 			<?php
 				get_search_form();
 
-		endif; ?>
+		endif;
+		?>
 	</div><!-- .page-content -->
 </section><!-- .no-results -->

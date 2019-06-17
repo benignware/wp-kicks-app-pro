@@ -1,128 +1,122 @@
 <?php
 
-// Load theme variables
-global $theme_variables;
 
-$theme_variables = json_decode(file_get_contents(get_template_directory() . "/dist/variables.json"), true);
+require_once 'inc/customizer_2.php';
+require_once 'inc/customize-theme.php';
+require_once 'inc/template-tags.php';
+require_once 'inc/template-functions.php';
+require_once 'inc/icon-functions.php';
 
+// require_once 'inc/customizer.php';
 
-// Add header image support
-add_theme_support('custom-header', array(
-	'width'         => 1680,
-	'height'        => 600,
-	'default-image' => get_template_directory_uri() . '/img/header-image.jpg'
-));
-
-// Make theme available for translation.
-load_theme_textdomain( 'kicks-app' );
-
-// Add default posts and comments RSS feed links to head.
-add_theme_support( 'automatic-feed-links' );
-
-// Enable support for Post Thumbnails on posts and pages.
-add_theme_support( 'post-thumbnails' );
-set_post_thumbnail_size( 900, 500, true );
-
-// Switch default core markup for search form, comment form, and comments to output valid HTML5.
-add_theme_support( 'html5', array( 'comment-list', 'comment-form', 'search-form', 'gallery', 'caption'  ));
-
-// Let WordPress manage the document title.
-add_theme_support( 'title-tag' );
-
-// Adjust default image sizes
-update_option( 'thumbnail_size_w', 230 );
-update_option( 'thumbnail_size_h', 230 );
-update_option( 'thumbnail_crop', 1 );
+// load_theme_textdomain( 'twentyseventeen' );
+	// Add default posts and comments RSS feed links to head.
+	add_theme_support( 'automatic-feed-links' );
+	/*
+	 * Let WordPress manage the document title.
+	 * By adding theme support, we declare that this theme does not use a
+	 * hard-coded <title> tag in the document head, and expect WordPress to
+	 * provide it for us.
+	 */
+	add_theme_support( 'title-tag' );
+	/*
+	 * Enable support for Post Thumbnails on posts and pages.
+	 *
+	 * @link https://developer.wordpress.org/themes/functionality/featured-images-post-thumbnails/
+	 */
+	add_theme_support( 'post-thumbnails' );
+	add_image_size( 'twentyseventeen-featured-image', 2000, 1200, true );
+	add_image_size( 'twentyseventeen-thumbnail-avatar', 100, 100, true );
 
 
-// Editor styles
-add_theme_support('editor-styles');
+add_action( 'after_setup_theme', function() {
+  add_theme_support( 'custom-logo', array(
+    'height'      => 40,
+    'width'       => 80,
+    'flex-height' => false,
+    'flex-width'  => true,
+    'header-text' => array(
+      'site-title',
+      'site-description'
+    ),
+  ));
 
-// Editor style
-// Add backend styles for Gutenberg.
-add_action( 'enqueue_block_editor_assets', function () {
-	// Load the theme styles within Gutenberg.
-	wp_enqueue_style( 'bootstrap-gutenberg', get_theme_file_uri( '/dist/editor.css' ), false );
+  // Add header image support
+  add_theme_support('custom-header', array(
+  	'width'         => 1680,
+  	'height'        => 600,
+  	'default-image' => get_template_directory_uri() . '/img/header-image.jpg'
+  ));
+}, 10);
+
+add_action('wp_enqueue_scripts', function() {
+  //  wp_enqueue_style('bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+  wp_enqueue_script('popper-js', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', array( 'jquery' ), '', true);
+  wp_enqueue_script('bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', array( 'jquery' ), '', true);
+  wp_enqueue_script('turbolinks-js', 'https://cdn.jsdelivr.net/npm/turbolinks@5.2.0/dist/turbolinks.min.js', null, '', false);
+
+  wp_enqueue_style( 'kicks-app-bootstrap', get_template_directory_uri() . '/assets/css/bootstrap.css');
+  wp_enqueue_style( 'kicks-app-style', get_template_directory_uri() . '/style.css');
+}, 10);
+
+add_action( 'enqueue_block_editor_assets', function() {
+	wp_deregister_style( 'bootstrap-editor-css');
+	wp_dequeue_style( 'bootstrap-editor-css');
+
+	wp_register_style( 'bootstrap-editor-css', get_template_directory_uri() . '/assets/css/bootstrap-editor.css');
+	wp_enqueue_style( 'bootstrap-editor-css');
+}, 11);
+
+
+add_action( 'wp_enqueue_scripts', function() {
+  // Get custom header meta from customizer with defaults.
+  $default_header_meta = array(
+      'background_position' => 'left',
+      'background_size'     => 'cover'
+  );
+  $header_meta = get_option( 'custom_header_meta', $default_header_meta );
+
+  // Render header meta as CSS parameters.
+  $header_styles = '';
+  foreach ( $header_meta as $key => $val ) {
+    $header_styles .= str_replace( '_', '-', $key ) . ':' . $val . ';';
+  }
+
+  // Render header image as CSS parameters.
+  if ( get_header_image() ) {
+      $header_image = get_theme_mod( 'header_image_data' );
+      // $header_styles .= 'background-image:url(' . $header_image->url . ');';
+      // $header_styles .= 'width:' . (string) $header_image->width . 'px;';
+      // $header_styles .= 'height:' . (string) $header_image->height . 'px;';
+      $header_styles .= 'object-fit:' . $header_meta['background_size'] . ';';
+      $header_styles .= 'height: 100%;';
+  }
+
+  // Finally render CSS selector with parameters.
+  $custom_css = ".wp-custom-header img { $header_styles }";
+
+  wp_register_style( 'kicks-app-custom-header-inline-style', false );
+  wp_enqueue_style( 'kicks-app-custom-header-inline-style' );
+  wp_add_inline_style('kicks-app-custom-header-inline-style', $custom_css );
+}, 10);
+
+add_action('get_header',function() {
+	remove_action('wp_head', '_admin_bar_bump_cb');
 });
 
-/**
- * Load Gutenberg stylesheet.
- */
-
-// Enqueue Scripts
-function enqueue_scripts() {
-  wp_enqueue_script( 'jquery' );
-  wp_enqueue_style( 'main', get_template_directory_uri() . '/dist/main.css');
-  wp_enqueue_script( 'vendor', get_template_directory_uri() . '/dist/vendor.js', array( 'jquery'));
-  wp_enqueue_script( 'main', get_template_directory_uri() . '/dist/main.js', array( 'vendor'));
-}
-add_action( 'wp_enqueue_scripts', 'enqueue_scripts' );
-
-// Initialize scripts once only
-function turbolinks_attributes( $url ) {
-  $defer = '/main/';
-  $defer_match = preg_match($defer, $url);
-
-  $ignore = '/mmr|vendor|main/';
-  $ignore_match = preg_match($ignore, $url);
-
-  if ($defer_match && $ignore_match) {
-    $url = "$url' defer";
-    $url = "$url data-turbolinks-eval='false";
-  } else if ($ignore_match) {
-    $url = "$url' data-turbolinks-eval='false";
-  } else if ($defer_match) {
-    $url = "$url' defer";
-  }
-  return $url;
-}
-add_filter( 'clean_url', 'turbolinks_attributes', 1, 1 );
-
-//
-
-// Register widget area.
-register_sidebar( array(
-  'name'          => __( 'Widget Area', 'kicks-app' ),
-  'id'            => 'sidebar-1',
-  'description'   => __( 'Add widgets here to appear in your sidebar.', 'kicks-app' )
-) );
-
-// Register menus
-register_nav_menus( array(
-  'primary' => __( 'Primary Menu',      'kicks-app' ),
-  'secondary' => __( 'Secondary Menu',  'kicks-app' ),
-  'social'  => __( 'Social Links Menu', 'kicks-app' )
-) );
-
-// Limit archives widget
-function limit_archives( $args ) {
-    $args['limit'] = 6;
-    return $args;
-}
-add_filter( 'widget_archives_args', 'limit_archives' );
-
-
-// Init bootstrap hooks
-if (function_exists('wp_bootstrap_hooks')) {
+if (function_exists( 'wp_bootstrap_hooks' )) {
   wp_bootstrap_hooks();
 }
 
-// Show font-awesome search icon in searchform
-add_filter( 'bootstrap_options', function($options) {
-  return array_merge($options, array(
-    'search_submit_label' => '<i class="fa fa-search"></i>',
-		'post_tag_class' => 'badge badge-primary text-light mb-1'
-  ));
-} );
-
-// Make social-menu-icons render font-awesome
+// Make social-menu-icons render font-awesom
 add_filter( 'wp_nav_menu_args', function($args) {
   $args['social_icon_prefix'] = 'fab fa-lg fa-';
+
   return $args;
-}, 1, 2 );
+}, 1, 2);
 
 // Excerpts
-define ("EXCERPT_LENGTH", 19);
+define('EXCERPT_LENGTH', 19);
 
 add_filter( 'excerpt_length', function( $length ) {
   return EXCERPT_LENGTH;
@@ -134,73 +128,24 @@ add_filter('excerpt_more', function ($more) {
   return '<a class="readmore d-block mt-1 mt-md-2 mt-lg-4" href="'. get_permalink($post->ID) . '">' . __('Read more') . ' »</a>';
 });
 
+// Register widget area.
 
-// Theme functions
-require_once 'inc/customizer.php';
-require_once 'inc/template-functions.php';
-require_once 'inc/template-tags.php';
+register_sidebar(array(
+  'name'          => __( 'Widget Area', 'kicks-app' ),
+  'id'            => 'sidebar-1',
+  'description'   => __( 'Add widgets here to appear in your sidebar.', 'kicks-app' )
+));
 
-function kicks_app_get_icon_html($array) {
-	return '<i class="fas fa-' . $array['icon'] . '"></i>';
-	//return 'ICOM<i class="' . $array['icon'] . '"></i>';
-	//return '[' . $array['icon'] . "]";
-}
-
-function kicks_app_unique_id() {
-	return uniqid();
-}
-
-add_filter('edit_post_link', function($link = null, $post_id = null, $text = '') {
-	$edit_post_link_class = 'btn btn-secondary btn-sm';
-	// Parse DOM
-	$doc = new DOMDocument();
-	@$doc->loadHTML('<?xml encoding="utf-8" ?>' . $link );
-	$links = $doc->getElementsByTagName('a');
-
-	foreach($links as $link) {
-		$classes = explode(' ', $link->getAttribute('class'));
-		$classes[]= $edit_post_link_class;
-		$classes = array_unique($classes);
-
-		$link->setAttribute('class', implode(' ', $classes));
-	}
-
-	$link = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
-
-	return $link;
-}, 3, 10);
+register_sidebar(array(
+  'name'          => __( 'Widget Area', 'kicks-app' ),
+  'id'            => 'sidebar-2',
+  'description'   => __( 'Add widgets here to appear in your footer.', 'kicks-app' )
+));
 
 
-add_filter('sticky_widget_area_options', function($options = array()) {
-	global $theme_variables;
-
-	$min_width = $theme_variables['global']['$grid-breakpoints']['lg'];
-
-	$options = array_merge($options, array(
-		'topSpacing' => 56,
-		'minWidth' => $min_width
-	));
-
-	return $options;
-});
-
-
-add_filter('get_header_image_tag', function($html, $header = null, $attr = null) {
-	$header_img_class = 'img-fluid img-cover custom-header-image';
-	// Parse DOM
-	$doc = new DOMDocument();
-	@$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html );
-	$imgs = $doc->getElementsByTagName('img');
-
-	foreach($imgs as $img) {
-		$classes = explode(' ', $img->getAttribute('class'));
-		$classes[]= $header_img_class;
-		$classes = array_unique($classes);
-
-		$img->setAttribute('class', trim(implode(' ', $classes)));
-	}
-
-	$html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
-
-	return $html;
-}, 3, 10);
+// Register menus
+register_nav_menus(array(
+  'primary' => __( 'Primary Menu',      'kicks-app' ),
+  'secondary' => __( 'Secondary Menu',  'kicks-app' ),
+  'social'  => __( 'Social Links Menu', 'kicks-app' )
+));

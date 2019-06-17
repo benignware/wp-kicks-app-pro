@@ -5,20 +5,20 @@
  * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#search-result
  *
  * @package WordPress
- * @subpackage Kicks_App
+ * @subpackage Twenty_Seventeen
  * @since 1.0
  * @version 1.0
  */
 
 get_header(); ?>
 
-<div class="wrap">
+<div class="wrap container">
 
 	<header class="page-header">
 		<?php if ( have_posts() ) : ?>
-			<h1 class="page-title"><?php printf( __( 'Search Results for: %s', 'kicks-app' ), '<span>' . get_search_query() . '</span>' ); ?></h1>
+			<h1 class="page-title"><?php printf( __( 'Search Results for: %s', 'twentyseventeen' ), '<span>' . get_search_query() . '</span>' ); ?></h1>
 		<?php else : ?>
-			<h1 class="page-title"><?php _e( 'Nothing Found', 'kicks-app' ); ?></h1>
+			<h1 class="page-title"><?php _e( 'Nothing Found', 'twentyseventeen' ); ?></h1>
 		<?php endif; ?>
 	</header><!-- .page-header -->
 
@@ -28,7 +28,8 @@ get_header(); ?>
 		<?php
 		if ( have_posts() ) :
 			/* Start the Loop */
-			while ( have_posts() ) : the_post();
+			while ( have_posts() ) :
+				the_post();
 
 				/**
 				 * Run the loop for the search to output the results.
@@ -39,15 +40,18 @@ get_header(); ?>
 
 			endwhile; // End of the loop.
 
-			the_posts_pagination( array(
-				'prev_text' => kicks_app_get_icon_html( array( 'icon' => 'arrow-left' ) ) . '<span class="screen-reader-text">' . __( 'Previous page', 'kicks-app' ) . '</span>',
-				'next_text' => '<span class="screen-reader-text">' . __( 'Next page', 'kicks-app' ) . '</span>' . kicks_app_get_icon_html( array( 'icon' => 'arrow-right' ) ),
-				'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'kicks-app' ) . ' </span>',
-			) );
+			the_posts_pagination(
+				array(
+					'prev_text'          => twentyseventeen_get_svg( array( 'icon' => 'arrow-left' ) ) . '<span class="screen-reader-text">' . __( 'Previous page', 'twentyseventeen' ) . '</span>',
+					'next_text'          => '<span class="screen-reader-text">' . __( 'Next page', 'twentyseventeen' ) . '</span>' . twentyseventeen_get_svg( array( 'icon' => 'arrow-right' ) ),
+					'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentyseventeen' ) . ' </span>',
+				)
+			);
 
-		else : ?>
+		else :
+			?>
 
-			<p><?php _e( 'Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'kicks-app' ); ?></p>
+			<p><?php _e( 'Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'twentyseventeen' ); ?></p>
 			<?php
 				get_search_form();
 
@@ -59,4 +63,5 @@ get_header(); ?>
 	<?php get_sidebar(); ?>
 </div><!-- .wrap -->
 
-<?php get_footer();
+<?php
+get_footer();

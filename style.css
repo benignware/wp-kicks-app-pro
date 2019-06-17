@@ -1,16 +1,218 @@
+@charset "UTF-8";
 /*
 Theme Name: Kicks App
-Theme URI: https://github.com/benignware-labs/wp-kicks-app
 Author: Rafael Nowrotek
-Author URI: http://benignware.com/
-Description: Wordpress Theme
-Version: 2.0
-License: MIT
-License URI: https://opensource.org/licenses/MIT
-Text Domain: kicks-app
-Tags: bootstrap, kick-starter-theme
-
-Based on Wordpress kicksapp. Flavored with Bootstrap 4 and more...
-
-Photo by Shawn Bagley on Unsplash
+Author URI: http://benignware.com
+Description: Demo theme for the Bootstrap Hooks wordpress plugin
+Version: 0.0.1
 */
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  /* height: 100%; */
+}
+/*
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+}
+*/
+body.admin-bar {
+  padding-top: 32px;
+}
+
+
+.site {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* height: calc(100% - 32px); */
+}
+
+.site-content {
+  padding: 2rem 0;
+}
+
+.screen-reader-text {
+  display: none;
+}
+
+.icon {
+  height: 1.1em;
+  width: 1.1em;
+  vertical-align: middle;
+  display: inline-block;
+  fill: currentcolor;
+}
+
+.site-header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+@media screen and (min-width: 600px) {
+  .site-content-contain {
+    padding-top: 56px;
+  }
+
+  .admin-bar .site-header {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 46px;
+  }
+}
+
+@media screen and (min-width: 783px) {
+  .admin-bar .site-header {
+    top: 32px;
+  }
+}
+
+.has-header-image .site-header {
+  height: 100vh;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  position: -webkit-sticky;
+  position: sticky;
+  top: calc(-100% + 56px);
+  z-index: 1001;
+}
+
+.has-header-image.admin-bar .site-header {
+  top: calc(-100% + 56px + 46px);
+  height: calc(100vh - 46px);
+}
+
+@media screen and (min-width: 600px) {
+  .has-header-image.admin-bar .site-header {
+    top: calc(-100% + 56px + 46px * 2);
+    height: calc(100vh - 46px);
+  }
+}
+
+@media screen and (min-width: 783px) {
+  .has-header-image.admin-bar .site-header {
+    top: calc(-100% + 56px + 32px * 2);
+    height: calc(100vh - 32px);
+  }
+}
+
+.custom-header {
+  flex-basis: auto;
+  flex-grow: 1;
+  flex-shrink: 1;
+  overflow: hidden;
+  position: relative;
+  margin: 0;
+}
+
+.custom-header-media {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.site-branding-text {
+  position: absolute;
+  top: 2.5rem;
+}
+
+.custom-header-media {
+  overflow: hidden;
+  clip: rect(0 100vw calc(100vh - 56px) 0);
+}
+
+.custom-header-media .wp-custom-header {
+  position: fixed;
+  top: 0;
+}
+
+.admin-bar .custom-header-media {
+  clip: rect(0 100vw calc(100vh - 56px - 32px) 0);
+}
+
+.custom-header-media img {
+  -o-object-fit: cover;
+     object-fit: cover;
+  height: 100%;
+  width: 100%;
+}
+
+.wp-custom-header {
+  height: 100%;
+}
+
+.navigation-top {
+  position: relative;
+  top: 0;
+  width: 100%;
+  height: 56px;
+}
+
+.site {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.site-content-contain {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.site-content {
+  flex-grow: 1;
+}
+
+.site-footer .navbar-nav {
+  margin-left: -0.5rem;
+  margin-right: -0.5rem;
+}
+
+@media screen and (min-width: 992px) {
+  .site-content .wrap {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+  }
+
+  #primary {
+  }
+
+  #secondary {
+    margin-left: 1rem;
+    max-width: 320px;
+    min-width: 260px;
+    width: 36%;
+    flex-basis: 36%;
+    flex-shrink: 0;
+  }
+}
+
+/* Custom */
+.menu-item-type-search-form .nav-link {
+  padding: 0;
+}
+
+
+*[data-sticky-widget-area-role="container"] {
+  width: 100%;
+}

@@ -4,13 +4,6 @@
   "description": "Wordpress theme",
   "main": "dist/main.js",
   "style": "dist/main.css",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "clean": "rm -rf dist",
-    "start": "npm run clean && webpack-dev-server",
-    "build": "npm run clean && cross-env NODE_ENV=production webpack",
-    "watch": "npm run clean && webpack -w"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/benignware-labs/wp-kicks-app.git"
@@ -25,47 +18,48 @@
     "url": "https://github.com/benignware-labs/wp-kicks-app/issues"
   },
   "homepage": "https://github.com/benignware-labs/wp-kicks-app#readme",
-  "dependencies": {
-    "@fortawesome/fontawesome-free": "^5.4.2",
-    "babel-polyfill": "^6.26.0",
-    "bootstrap": "^4.3.1",
-    "font-awesome": "^4.7.0",
-    "hamburgers": "^0.9.3",
-    "jquery": "^3.3.1",
-    "popper.js": "^1.14.3",
-    "svgxuse": "^1.2.6",
-    "turbolinks": "^5.2.0",
-    "webpack-json-stringify-loader": "^1.0.0"
-  },
   "devDependencies": {
-    "@babel/core": "^7.1.0",
-    "@babel/preset-env": "^7.1.0",
-    "autoprefixer": "^8.6.5",
-    "babel-loader": "^8.0.4",
-    "cross-env": "^5.2.0",
-    "css-loader": "^0.28.11",
-    "cssnano": "^3.10.0",
-    "exports-loader": "^0.7.0",
-    "expose-loader": "^0.7.5",
-    "extract-loader": "^2.0.1",
-    "fast-sass-loader": "^1.4.6",
-    "file-loader": "^1.1.11",
-    "html-loader": "^0.5.5",
-    "json-extract-loader": "^0.1.2",
-    "json-loader": "^0.5.7",
-    "json5-loader": "^1.0.1",
-    "node-sass": "^4.11.0",
-    "postcss": "^7.0.14",
-    "postcss-import": "^11.1.0",
-    "postcss-loader": "^2.1.6",
-    "prettier": "^1.16.4",
-    "prettier-webpack-plugin": "^1.2.0",
-    "raw-loader": "^1.0.0",
+    "@wordpress/browserslist-config": "^2.2.2",
+    "autoprefixer": "^9.1.5",
+    "chokidar-cli": "^1.2.1",
+    "mkdirp": "^0.5.1",
+    "node-sass": "^4.12.0",
+    "npm-run-all": "^4.1.5",
+    "postcss-cli": "^6.1.0",
+    "postcss-focus-within": "^3.0.0",
+    "query-ast": "^1.0.2",
+    "rtlcss": "^2.4.0",
     "sass-extract": "^2.1.0",
-    "sass-extract-loader": "^1.1.0",
-    "svg-sprite-loader": "^3.7.3",
-    "uglifyjs-webpack-plugin": "^1.2.7",
-    "webpack": "^4.29.5",
-    "webpack-cli": "^3.2.3"
+    "sass-variable-parser": "^1.2.2",
+    "scss-parser": "^1.0.3"
+  },
+  "rtlcssConfig": {
+    "options": {
+      "autoRename": false,
+      "autoRenameStrict": false,
+      "blacklist": {},
+      "clean": true,
+      "greedy": false,
+      "processUrls": false,
+      "stringMap": []
+    },
+    "plugins": [],
+    "map": false
+  },
+  "browserslist": [
+    "extends @wordpress/browserslist-config"
+  ],
+  "scripts": {
+    "build:style": "node-sass style.scss style.css --include-path node_modules --output-style expanded && postcss -r style.css",
+    "build:bootstrap": "node ./build.js",
+    "build:style-editor": "node-sass style-editor.scss style-editor.css --output-style expanded && postcss -r style-editor.css",
+    "build:style-editor-customizer": "node-sass style-editor-customizer.scss style-editor-customizer.css --output-style expanded && postcss -r style-editor-customizer.css",
+    "build:rtl": "rtlcss style.css style-rtl.css",
+    "build:print": "node-sass print.scss print.css --output-style expanded && postcss -r print.css",
+    "build": "run-p \"build:*\"",
+    "watch": "chokidar \"**/*.scss\" -c \"npm run build\" --initial"
+  },
+  "dependencies": {
+    "bootstrap": "^4.3.1"
   }
 }

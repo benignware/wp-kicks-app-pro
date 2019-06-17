@@ -10,11 +10,14 @@ wp core install \
   --admin_user="wordpress" \
   --admin_password="wordpress" \
   --admin_email="admin@example.com" \
-  --url="http://localhost:8030" \
+  --url="http://localhost:8080" \
   --skip-email
 
 # Update permalink structure.
 wp option update permalink_structure "/%year%/%monthnum%/%postname%/" --skip-themes --skip-plugins
 
-# Activate plugin.
+# Activate plugins.
+wp plugin activate wordpress-importer
+
+# Activate theme.
 wp theme activate kicks-app

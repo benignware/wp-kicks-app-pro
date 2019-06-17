@@ -9,10 +9,11 @@
  */
 
 ?>
-<article id="post-<?php the_ID(); ?>" <?php post_class( 'kicks_app-panel ' ); ?> >
+<article id="post-<?php the_ID(); ?>" <?php post_class( 'twentyseventeen-panel ' ); ?> >
 
-	<?php if ( has_post_thumbnail() ) :
-		$thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'kicks_app-featured-image' );
+	<?php
+	if ( has_post_thumbnail() ) :
+		$thumbnail = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'twentyseventeen-featured-image' );
 
 		// Calculate aspect ratio: h / w * 100%.
 		$ratio = $thumbnail[2] / $thumbnail[1] * 100;
@@ -25,25 +26,27 @@
 	<?php endif; ?>
 
 	<div class="panel-content">
-		<div class="wrap">
+		<div class="wrap container">
 			<header class="entry-header">
 				<?php the_title( '<h2 class="entry-title">', '</h2>' ); ?>
 
-				<?php kicks_app_edit_link( get_the_ID() ); ?>
+				<?php twentyseventeen_edit_link( get_the_ID() ); ?>
 
 			</header><!-- .entry-header -->
 
 			<div class="entry-content">
 				<?php
 					/* translators: %s: Name of current post */
-					the_content( sprintf(
-						__( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'kick-sapp' ),
-						get_the_title()
-					) );
-				?>
+					the_content(
+						sprintf(
+							__( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'twentyseventeen' ),
+							get_the_title()
+						)
+					);
+					?>
 			</div><!-- .entry-content -->
 
 		</div><!-- .wrap -->
 	</div><!-- .panel-content -->
 
-</article><!-- #post-## -->
+</article><!-- #post-<?php the_ID(); ?> -->

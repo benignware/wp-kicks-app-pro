@@ -3,14 +3,14 @@
  * Twenty Seventeen: Color Patterns
  *
  * @package WordPress
- * @subpackage Kicks_App
+ * @subpackage Twenty_Seventeen
  * @since 1.0
  */
 
 /**
  * Generate the CSS for the current custom color scheme.
  */
-function kicks_app_custom_colors_css() {
+function twentyseventeen_custom_colors_css() {
 	$hue = absint( get_theme_mod( 'colorscheme_hue', 250 ) );
 
 	/**
@@ -20,10 +20,10 @@ function kicks_app_custom_colors_css() {
 	 *
 	 * @param int $saturation Color saturation level.
 	 */
-	$saturation = absint( apply_filters( 'kicks_app_custom_colors_saturation', 50 ) );
+	$saturation         = absint( apply_filters( 'twentyseventeen_custom_colors_saturation', 50 ) );
 	$reduced_saturation = ( .8 * $saturation ) . '%';
-	$saturation = $saturation . '%';
-	$css = '
+	$saturation         = $saturation . '%';
+	$css                = '
 /**
  * Twenty Seventeen: Color Patterns
  *
@@ -138,7 +138,7 @@ function kicks_app_custom_colors_css() {
 .colors-custom .menu-toggle,
 .colors-custom .page .panel-content .entry-title,
 .colors-custom .page-title,
-.colors-custom.page:not(.kicks_app-front-page) .entry-title,
+.colors-custom.page:not(.twentyseventeen-front-page) .entry-title,
 .colors-custom .page-links a .page-number,
 .colors-custom .comment-metadata a.comment-edit-link,
 .colors-custom .comment-reply-link .icon,
@@ -147,7 +147,7 @@ function kicks_app_custom_colors_css() {
 .colors-custom .post-navigation a:focus .icon,
 .colors-custom .post-navigation a:hover .icon,
 .colors-custom .site-content .site-content-light,
-.colors-custom .kicks_app-panel .recent-posts .entry-header .edit-link {
+.colors-custom .twentyseventeen-panel .recent-posts .entry-header .edit-link {
 	color: hsl( ' . $hue . ', ' . $saturation . ', 13% ); /* base: #222; */
 }
 
@@ -219,7 +219,7 @@ body.colors-custom,
 .colors-custom h6,
 .colors-custom label,
 .colors-custom .entry-title a,
-.colors-custom.kicks_app-front-page .panel-content .recent-posts article,
+.colors-custom.twentyseventeen-front-page .panel-content .recent-posts article,
 .colors-custom .entry-footer .cat-links a,
 .colors-custom .entry-footer .tags-links a,
 .colors-custom .format-quote blockquote,
@@ -307,7 +307,7 @@ body.colors-custom,
 	color: hsl( ' . $hue . ', ' . $saturation . ', 46% ); /* base: #767676; */
 }
 
-.colors-custom button:hover,
+.colors-custom button:hover:not( .mejs-container > button ),
 .colors-custom button:focus,
 .colors-custom input[type="button"]:hover,
 .colors-custom input[type="button"]:focus,
@@ -391,7 +391,7 @@ body.colors-custom,
 	border-color: hsl( ' . $hue . ', ' . $saturation . ', 87% ); /* base: #ddd; */
 }
 
-.colors-custom.kicks_app-front-page article:not(.has-post-thumbnail):not(:first-child),
+.colors-custom.twentyseventeen-front-page article:not(.has-post-thumbnail):not(:first-child),
 .colors-custom .widget ul li {
 	border-top-color: hsl( ' . $hue . ', ' . $saturation . ', 87% ); /* base: #ddd; */
 }
@@ -576,5 +576,5 @@ body.colors-custom,
 	 * @param int    $hue        The user's selected color hue.
 	 * @param string $saturation Filtered theme color saturation level.
 	 */
-	return apply_filters( 'kicks_app_custom_colors_css', $css, $hue, $saturation );
+	return apply_filters( 'twentyseventeen_custom_colors_css', $css, $hue, $saturation );
 }

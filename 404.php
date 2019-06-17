@@ -5,7 +5,7 @@
  * @link https://codex.wordpress.org/Creating_an_Error_404_Page
  *
  * @package WordPress
- * @subpackage Kicks_App
+ * @subpackage Twenty_Seventeen
  * @since 1.0
  * @version 1.0
  */
@@ -18,10 +18,10 @@ get_header(); ?>
 
 			<section class="error-404 not-found">
 				<header class="page-header">
-					<h1 class="page-title"><?php _e( 'Oops! That page can&rsquo;t be found.', 'kicks-app' ); ?></h1>
+					<h1 class="page-title"><?php _e( 'Oops! That page can&rsquo;t be found.', 'twentyseventeen' ); ?></h1>
 				</header><!-- .page-header -->
 				<div class="page-content">
-					<p><?php _e( 'It looks like nothing was found at this location. Maybe try a search?', 'kicks-app' ); ?></p>
+					<p><?php _e( 'It looks like nothing was found at this location. Maybe try a search?', 'twentyseventeen' ); ?></p>
 
 					<?php get_search_form(); ?>
 
@@ -29,6 +29,7 @@ get_header(); ?>
 			</section><!-- .error-404 -->
 		</main><!-- #main -->
 	</div><!-- #primary -->
-</div><!-- .wrap container -->
+</div><!-- .wrap -->
 
-<?php get_footer();
+<?php
+get_footer();

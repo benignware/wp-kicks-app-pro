@@ -2,7 +2,7 @@
 /**
  * Template part for displaying gallery posts
  *
- * @link https://codex.wordpress.org/Template_Hierarchy
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
  * @package WordPress
  * @subpackage Twenty_Seventeen
@@ -15,19 +15,19 @@
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<?php
 	if ( is_sticky() && is_home() ) {
-		echo kicks_app_get_icon_html( array( 'icon' => 'thumb-tack' ) );
+		echo twentyseventeen_get_svg( array( 'icon' => 'thumb-tack' ) );
 	}
 	?>
 	<header class="entry-header">
 		<?php
 		if ( 'post' === get_post_type() ) {
 			echo '<div class="entry-meta">';
-				if ( is_single() ) {
-					kicks_app_posted_on();
-				} else {
-					echo kicks_app_time_link();
-					kicks_app_edit_link();
-				};
+			if ( is_single() ) {
+				twentyseventeen_posted_on();
+			} else {
+				echo twentyseventeen_time_link();
+				twentyseventeen_edit_link();
+			};
 			echo '</div><!-- .entry-meta -->';
 		};
 
@@ -44,7 +44,7 @@
 	<?php if ( '' !== get_the_post_thumbnail() && ! is_single() && ! get_post_gallery() ) : ?>
 		<div class="post-thumbnail">
 			<a href="<?php the_permalink(); ?>">
-				<?php the_post_thumbnail( 'kicks_app-featured-image' ); ?>
+				<?php the_post_thumbnail( 'twentyseventeen-featured-image' ); ?>
 			</a>
 		</div><!-- .post-thumbnail -->
 	<?php endif; ?>
@@ -66,17 +66,21 @@
 		if ( is_single() || ! get_post_gallery() ) {
 
 			/* translators: %s: Name of current post */
-			the_content( sprintf(
-				__( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'kicks_app' ),
-				get_the_title()
-			) );
+			the_content(
+				sprintf(
+					__( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'twentyseventeen' ),
+					get_the_title()
+				)
+			);
 
-			wp_link_pages( array(
-				'before'      => '<div class="page-links">' . __( 'Pages:', 'kicks_app' ),
-				'after'       => '</div>',
-				'link_before' => '<span class="page-number">',
-				'link_after'  => '</span>',
-			) );
+			wp_link_pages(
+				array(
+					'before'      => '<div class="page-links">' . __( 'Pages:', 'twentyseventeen' ),
+					'after'       => '</div>',
+					'link_before' => '<span class="page-number">',
+					'link_after'  => '</span>',
+				)
+			);
 
 		};
 		?>
@@ -85,8 +89,8 @@
 
 	<?php
 	if ( is_single() ) {
-		kicks_app_entry_footer();
+		twentyseventeen_entry_footer();
 	}
 	?>
 
-</article><!-- #post-## -->
+</article><!-- #post-<?php the_ID(); ?> -->

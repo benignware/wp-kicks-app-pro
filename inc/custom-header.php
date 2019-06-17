@@ -5,16 +5,16 @@
  * @link https://codex.wordpress.org/Custom_Headers
  *
  * @package WordPress
- * @subpackage Kicks_App
+ * @subpackage Twenty_Seventeen
  * @since 1.0
  */
 
 /**
  * Set up the WordPress core custom header feature.
  *
- * @uses kicks_app_header_style()
+ * @uses twentyseventeen_header_style()
  */
-function kicks_app_custom_header_setup() {
+function twentyseventeen_custom_header_setup() {
 
 	/**
 	 * Filter Twenty Seventeen custom-header support arguments.
@@ -24,65 +24,73 @@ function kicks_app_custom_header_setup() {
 	 * @param array $args {
 	 *     An array of custom-header support arguments.
 	 *
-	 *     @type string $default-image     		Default image of the header.
-	 *     @type string $default_text_color     Default color of the header text.
+	 *     @type string $default-image          Default image of the header.
 	 *     @type int    $width                  Width in pixels of the custom header image. Default 954.
 	 *     @type int    $height                 Height in pixels of the custom header image. Default 1300.
+	 *     @type string $flex-height            Flex support for height of header.
+	 *     @type string $video                  Video support for header.
 	 *     @type string $wp-head-callback       Callback function used to styles the header image and text
 	 *                                          displayed on the blog.
-	 *     @type string $flex-height     		Flex support for height of header.
 	 * }
 	 */
-	add_theme_support( 'custom-header', apply_filters( 'kicks_app_custom_header_args', array(
-		'default-image'      => get_parent_theme_file_uri( '/assets/images/header.jpg' ),
-		'width'              => 2000,
-		'height'             => 1200,
-		'flex-height'        => true,
-		'video'              => true,
-		'wp-head-callback'   => 'kicks_app_header_style',
-	) ) );
+	add_theme_support(
+		'custom-header',
+		apply_filters(
+			'twentyseventeen_custom_header_args',
+			array(
+				'default-image'    => get_parent_theme_file_uri( '/assets/images/header.jpg' ),
+				'width'            => 2000,
+				'height'           => 1200,
+				'flex-height'      => true,
+				'video'            => true,
+				'wp-head-callback' => 'twentyseventeen_header_style',
+			)
+		)
+	);
 
-	register_default_headers( array(
-		'default-image' => array(
-			'url'           => '%s/assets/images/header.jpg',
-			'thumbnail_url' => '%s/assets/images/header.jpg',
-			'description'   => __( 'Default Header Image', 'kicks-app' ),
-		),
-	) );
+	register_default_headers(
+		array(
+			'default-image' => array(
+				'url'           => '%s/assets/images/header.jpg',
+				'thumbnail_url' => '%s/assets/images/header.jpg',
+				'description'   => __( 'Default Header Image', 'twentyseventeen' ),
+			),
+		)
+	);
 }
-add_action( 'after_setup_theme', 'kicks_app_custom_header_setup' );
+add_action( 'after_setup_theme', 'twentyseventeen_custom_header_setup' );
 
-if ( ! function_exists( 'kicks_app_header_style' ) ) :
-/**
- * Styles the header image and text displayed on the blog.
- *
- * @see kicks_app_custom_header_setup().
- */
-function kicks_app_header_style() {
-	$header_text_color = get_header_textcolor();
+if ( ! function_exists( 'twentyseventeen_header_style' ) ) :
+	/**
+	 * Styles the header image and text displayed on the blog.
+	 *
+	 * @see twentyseventeen_custom_header_setup().
+	 */
+	function twentyseventeen_header_style() {
+		$header_text_color = get_header_textcolor();
 
-	// If no custom options for text are set, let's bail.
-	// get_header_textcolor() options: add_theme_support( 'custom-header' ) is default, hide text (returns 'blank') or any hex value.
-	if ( get_theme_support( 'custom-header', 'default-text-color' ) === $header_text_color ) {
-		return;
-	}
+		// If no custom options for text are set, let's bail.
+		// get_header_textcolor() options: add_theme_support( 'custom-header' ) is default, hide text (returns 'blank') or any hex value.
+		if ( get_theme_support( 'custom-header', 'default-text-color' ) === $header_text_color ) {
+			return;
+		}
 
-	// If we get this far, we have custom styles. Let's do this.
-	?>
-	<style id="kicks_app-custom-header-styles" type="text/css">
-	<?php
+		// If we get this far, we have custom styles. Let's do this.
+		?>
+		<style id="twentyseventeen-custom-header-styles" type="text/css">
+		<?php
 		// Has the text been hidden?
 		if ( 'blank' === $header_text_color ) :
-	?>
+			?>
 		.site-title,
 		.site-description {
 			position: absolute;
 			clip: rect(1px, 1px, 1px, 1px);
 		}
-	<?php
-		// If the user has set a custom color for the text use that.
+			<?php
+			// If the user has set a custom color for the text use that.
 		else :
-	?>
+			?>
 		.site-title a,
 		.colors-dark .site-title a,
 		.colors-custom .site-title a,
@@ -105,9 +113,9 @@ function kicks_app_header_style() {
 		}
 	<?php endif; ?>
 	</style>
-	<?php
-}
-endif; // End of kicks_app_header_style.
+		<?php
+	}
+endif; // End of twentyseventeen_header_style.
 
 /**
  * Customize video play/pause button in the custom header.
@@ -115,9 +123,19 @@ endif; // End of kicks_app_header_style.
  * @param array $settings Video settings.
  * @return array The filtered video settings.
  */
-function kicks_app_video_controls( $settings ) {
-	$settings['l10n']['play'] = '<span class="screen-reader-text">' . __( 'Play background video', 'kicks-app' ) . '</span>' . kicks_app_get_icon_html( array( 'icon' => 'play' ) );
-	$settings['l10n']['pause'] = '<span class="screen-reader-text">' . __( 'Pause background video', 'kicks-app' ) . '</span>' . kicks_app_get_icon_html( array( 'icon' => 'pause' ) );
+function twentyseventeen_video_controls( $settings ) {
+	$settings['l10n']['play']  = '<span class="screen-reader-text">' . __( 'Play background video', 'twentyseventeen' ) . '</span>' . twentyseventeen_get_svg( array( 'icon' => 'play' ) );
+	$settings['l10n']['pause'] = '<span class="screen-reader-text">' . __( 'Pause background video', 'twentyseventeen' ) . '</span>' . twentyseventeen_get_svg( array( 'icon' => 'pause' ) );
 	return $settings;
 }
-add_filter( 'header_video_settings', 'kicks_app_video_controls' );
+add_filter( 'header_video_settings', 'twentyseventeen_video_controls' );
+
+
+
+
+add_filter('get_header_image_tag', function($html, $header, $attr) {
+  $options = wp_bootstrap_options();
+  $html = wp_bootstrap_tag_add_class('img', $options['img_class'], $html);
+
+  return $html;
+}, 11, 3);

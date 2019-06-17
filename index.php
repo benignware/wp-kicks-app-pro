@@ -7,10 +7,10 @@
  * It is used to display a page when nothing more specific matches a query.
  * E.g., it puts together the home page when no home.php file exists.
  *
- * @link https://codex.wordpress.org/Template_Hierarchy
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
  * @package WordPress
- * @subpackage Kicks_App
+ * @subpackage Twenty_Seventeen
  * @since 1.0
  * @version 1.0
  */
@@ -35,7 +35,8 @@ get_header(); ?>
 			if ( have_posts() ) :
 
 				/* Start the Loop */
-				while ( have_posts() ) : the_post();
+				while ( have_posts() ) :
+					the_post();
 
 					/*
 					 * Include the Post-Format-specific template for the content.
@@ -46,11 +47,13 @@ get_header(); ?>
 
 				endwhile;
 
-				the_posts_pagination( array(
-					'prev_text' => kicks_app_get_icon_html( array( 'icon' => 'arrow-left' ) ) . '<span class="screen-reader-text">' . __( 'Previous page', 'kicks-app' ) . '</span>',
-					'next_text' => '<span class="screen-reader-text">' . __( 'Next page', 'kicks-app' ) . '</span>' . kicks_app_get_icon_html( array( 'icon' => 'arrow-right' ) ),
-					'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'kicks-app' ) . ' </span>',
-				) );
+				the_posts_pagination(
+					array(
+						'prev_text'          => twentyseventeen_get_svg( array( 'icon' => 'arrow-left' ) ) . '<span class="screen-reader-text">' . __( 'Previous page', 'twentyseventeen' ) . '</span>',
+						'next_text'          => '<span class="screen-reader-text">' . __( 'Next page', 'twentyseventeen' ) . '</span>' . twentyseventeen_get_svg( array( 'icon' => 'arrow-right' ) ),
+						'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentyseventeen' ) . ' </span>',
+					)
+				);
 
 			else :
 
@@ -62,6 +65,7 @@ get_header(); ?>
 		</main><!-- #main -->
 	</div><!-- #primary -->
 	<?php get_sidebar(); ?>
-</div><!-- .wrap container -->
+</div><!-- .wrap -->
 
-<?php get_footer();
+<?php
+get_footer();

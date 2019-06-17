@@ -1,7 +1,0 @@
-.img {
-  @each $value in (cover, contain, fill) {
-    &-#{$value} {
-      object-fit: #{$value};
-    }
-  }
-}

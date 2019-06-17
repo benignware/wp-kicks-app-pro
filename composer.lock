@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2ab4c096ec5872f73a0d90bde094ddd0",
+    "content-hash": "cdf4114853fc5d3c4e66bb20234dfa57",
     "packages": [
         {
             "name": "composer/installers",
@@ -129,22 +129,42 @@
     ],
     "packages-dev": [
         {
+            "name": "benignware/basic-contact-form",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/benignware-labs/wp-basic-contact-form.git",
+                "reference": "v0.1.1"
+            },
+            "type": "wordpress-plugin"
+        },
+        {
             "name": "benignware/bootstrap-hooks",
-            "version": "v0.1.0-beta.8",
+            "version": "v0.1.0-alpha.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/benignware/wp-bootstrap-hooks.git",
-                "reference": "v0.1.0-beta.8"
+                "reference": "v0.1.0-alpha.5"
             },
             "type": "wordpress-muplugin"
         },
         {
             "name": "benignware/sticky-widget-area",
-            "version": "v0.0.5",
+            "version": "v0.0.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/benignware-labs/wp-sticky-widget-area.git",
-                "reference": "v0.0.5"
+                "reference": "v0.0.10"
+            },
+            "type": "wordpress-plugin"
+        },
+        {
+            "name": "benignware/swiper-shortcode",
+            "version": "v0.1.0-beta.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/benignware-labs/wp-swiper-shortcode.git",
+                "reference": "v0.1.0-beta.1"
             },
             "type": "wordpress-plugin"
         },
@@ -191,6 +211,42 @@
             "time": "2015-01-21T14:32:26+00:00"
         },
         {
+            "name": "wpackagist-plugin/customizer-reset-by-wpzoom",
+            "version": "1.0.1",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/customizer-reset-by-wpzoom/",
+                "reference": "trunk"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/customizer-reset-by-wpzoom.zip?timestamp=1558465043"
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/customizer-reset-by-wpzoom/"
+        },
+        {
+            "name": "wpackagist-plugin/wordpress-importer",
+            "version": "0.6.4",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/wordpress-importer/",
+                "reference": "tags/0.6.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/wordpress-importer.0.6.4.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/wordpress-importer/"
+        },
+        {
             "name": "wptrt/theme-unit-test",
             "version": "master",
             "source": {
@@ -199,14 +255,15 @@
                 "reference": "master"
             },
             "type": "library",
-            "time": "2018-10-21T05:52:56+00:00"
+            "time": "2019-05-12T05:00:52+00:00"
         }
     ],
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
         "wptrt/theme-unit-test": 20,
-        "benignware/bootstrap-hooks": 10
+        "benignware/bootstrap-hooks": 15,
+        "benignware/swiper-shortcode": 10
     },
     "prefer-stable": false,
     "prefer-lowest": false,
