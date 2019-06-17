@@ -1,6 +1,6 @@
 # Kicks App
 
-Wordpress Theme
+Wordpress Kickstarter Theme
 
 ## Development
 

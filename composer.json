@@ -1,9 +1,9 @@
 {
   "name": "benignware/wp-kicks-app",
-  "version": "0.1.0",
+  "version": "0.1.0-beta.1",
   "type": "wordpress-theme",
   "license": "MIT",
-  "description": "Wordpress theme",
+  "description": "Wordpress Kickstarter Theme",
   "homepage": "http://github.com/benignware-labs/wp-kicks-app",
   "authors": [
     {
