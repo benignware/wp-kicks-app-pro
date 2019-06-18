@@ -29,6 +29,13 @@ require_once 'inc/theme-tags.php';
 	add_image_size( 'twentyseventeen-featured-image', 2000, 1200, true );
 	add_image_size( 'twentyseventeen-thumbnail-avatar', 100, 100, true );
 
+	$custom_logo = array_reduce(array(get_stylesheet_directory(), get_template_directory()), function($carry, $item) {
+		return array_merge($carry, glob($item . '/img/custom-logo.{jpg,png,gif,svg}', GLOB_BRACE));
+	}, array());
+
+// $custom_logo = glob(get_stylesheet_directory() . '/img/custom-logo.{jpg,png,gif,svg}', GLOB_BRACE);
+
+
 
 add_action( 'after_setup_theme', function() {
   add_theme_support( 'custom-logo', array(
@@ -40,13 +47,24 @@ add_action( 'after_setup_theme', function() {
       'site-title',
       'site-description'
     ),
+		'default-image' => array_reduce(
+			array(get_stylesheet_directory(), get_template_directory()),
+			function($carry, $item) {
+				return array_merge($carry, glob($item . '/img/custom-logo.{jpg,png,gif,svg}', GLOB_BRACE));
+			}, array()
+		)
   ));
 
   // Add header image support
   add_theme_support('custom-header', array(
   	'width'         => 1680,
   	'height'        => 600,
-  	'default-image' => get_template_directory_uri() . '/img/header-image.jpg'
+		'default-image' => array_reduce(
+			array(get_stylesheet_directory(), get_template_directory()),
+			function($carry, $item) {
+				return array_merge($carry, glob($item . '/img/header-image.{jpg,png,gif,svg}', GLOB_BRACE));
+			}, array()
+		)
   ));
 }, 10);
 
@@ -159,7 +177,7 @@ register_nav_menus(array(
 ));
 
 add_filter('theme_icon_html', function($html, $name) {
-	return sprintf('<i class="far fa-%s"> </i>', $name);
+	return sprintf('<i class="fas far fa-%s"> </i>', $name);
 }, 10, 2);
 
 add_filter('the_category', function($list) {
@@ -167,3 +185,8 @@ add_filter('the_category', function($list) {
 
 	return $list;
 });
+
+
+add_filter('get_custom_logo', function($html) {
+  return 'Test' . $html;
+}, 11);
