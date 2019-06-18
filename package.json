@@ -1,6 +1,6 @@
 {
   "name": "wp-kicks-app",
-  "version": "0.1.0-beta.2",
+  "version": "0.1.0-beta.3",
   "description": "Wordpress theme",
   "private": true,
   "main": "dist/main.js",
