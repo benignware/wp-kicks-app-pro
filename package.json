@@ -1,6 +1,6 @@
 {
   "name": "wp-kicks-app",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0-beta.2",
   "description": "Wordpress theme",
   "private": true,
   "main": "dist/main.js",
@@ -23,6 +23,7 @@
     "@wordpress/browserslist-config": "^2.2.2",
     "autoprefixer": "^9.1.5",
     "chokidar-cli": "^1.2.1",
+    "cpx": "^1.5.0",
     "mkdirp": "^0.5.1",
     "node-sass": "^4.12.0",
     "npm-run-all": "^4.1.5",
@@ -51,16 +52,23 @@
     "extends @wordpress/browserslist-config"
   ],
   "scripts": {
-    "build:style": "node-sass style.scss style.css --include-path node_modules --output-style expanded && postcss -r style.css",
-    "build:bootstrap": "node ./build.js",
-    "build:style-editor": "node-sass style-editor.scss style-editor.css --output-style expanded && postcss -r style-editor.css",
-    "build:style-editor-customizer": "node-sass style-editor-customizer.scss style-editor-customizer.css --output-style expanded && postcss -r style-editor-customizer.css",
-    "build:rtl": "rtlcss style.css style-rtl.css",
-    "build:print": "node-sass print.scss print.css --output-style expanded && postcss -r print.css",
-    "build": "run-p \"build:*\"",
-    "watch": "chokidar \"**/*.scss\" -c \"npm run build\" --initial"
+    "xbuild:style": "node-sass style.scss style.css --include-path node_modules --output-style expanded && postcss -r style.css",
+    "xbuild:bootstrap-css": "node ./build.js",
+    "xbuild:style-editor": "node-sass style-editor.scss style-editor.css --output-style expanded && postcss -r style-editor.css",
+    "xbuild:style-editor-customizer": "node-sass style-editor-customizer.scss style-editor-customizer.css --output-style expanded && postcss -r style-editor-customizer.css",
+    "xbuild:rtl": "rtlcss style.css style-rtl.css",
+    "xbuild:print": "node-sass print.scss print.css --output-style expanded && postcss -r print.css",
+    "xbuild": "run-p \"build:*\"",
+    "watch": "chokidar \"**/*.scss\" -c \"npm run build\" --initial",
+    "build:bootstrap": "cpx './node_modules/bootstrap/dist/js/**/*.*' dist/bootstrap/js && node ./build.js",
+    "build:popper": "cpx './node_modules/popper.js/dist/**/*.*' dist/popper.js",
+    "build:fontawesome": "cpx './node_modules/@fortawesome/fontawesome-free/**/*.*' dist/fontawesome",
+    "build": "run-p \"build:*\""
   },
   "dependencies": {
-    "bootstrap": "^4.3.1"
+    "@fortawesome/fontawesome-free": "^5.9.0",
+    "bootstrap": "^4.3.1",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.15.0"
   }
 }

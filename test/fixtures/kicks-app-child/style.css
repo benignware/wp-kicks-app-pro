@@ -7,3 +7,11 @@ Description: Demo child theme for the Kicks App Theme
 Template: kicks-app
 Version: 0.0.1
 */
+
+:root {
+  --primary: lightblue;
+  --body-bg: white;
+  --body-color: black;
+  --font-family-sans-serif: 'Open Sans', sans-serif;
+  --h2-font-size: 30px;
+}

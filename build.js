@@ -12,7 +12,6 @@ const { sync: mkdirp } = require('mkdirp');
 let { parse, stringify } = require('scss-parser');
 let createQueryWrapper = require('query-ast');
 
-
 function rgbaToHex(orig){
  var rgb = orig.replace(/\s/g,'').match(/^rgba?\((\d+),(\d+),(\d+)/i);
  return (rgb && rgb.length === 4) ? "#" +
@@ -403,13 +402,13 @@ const build = async(entry, dest = 'dist') => {
 
 const main = async() => {
   await build(
-    path.resolve(__dirname, './scss/bootstrap.scss'),
-    path.join(__dirname, 'assets/css/bootstrap.css')
+    path.resolve(__dirname, './scss/bootstrap/bootstrap.scss'),
+    path.join(__dirname, 'dist/bootstrap.css')
   );
 
   await build(
-    path.resolve(__dirname, './scss/bootstrap-editor.scss'),
-    path.join(__dirname, 'assets/css/bootstrap-editor.css')
+    path.resolve(__dirname, './scss/bootstrap/bootstrap-editor.scss'),
+    path.join(__dirname, 'dist/bootstrap-editor.css')
   );
 };
 

@@ -6,6 +6,7 @@ require_once 'inc/customize-theme.php';
 require_once 'inc/template-tags.php';
 require_once 'inc/template-functions.php';
 require_once 'inc/icon-functions.php';
+require_once 'inc/theme-tags.php';
 
 // require_once 'inc/customizer.php';
 
@@ -52,18 +53,25 @@ add_action( 'after_setup_theme', function() {
 add_action('wp_enqueue_scripts', function() {
   //  wp_enqueue_style('bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
   wp_enqueue_script('popper-js', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', array( 'jquery' ), '', true);
-  wp_enqueue_script('bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', array( 'jquery' ), '', true);
-  wp_enqueue_script('turbolinks-js', 'https://cdn.jsdelivr.net/npm/turbolinks@5.2.0/dist/turbolinks.min.js', null, '', false);
+  // wp_enqueue_script('bootstrap-js', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js', array( 'jquery' ), '', true);
 
-  wp_enqueue_style( 'kicks-app-bootstrap', get_template_directory_uri() . '/assets/css/bootstrap.css');
-  wp_enqueue_style( 'kicks-app-style', get_template_directory_uri() . '/style.css');
+	wp_enqueue_script('popper-js', get_template_directory_uri() . '/dist/popper.js/popper.min.js', array( 'jquery' ), '', true);
+	wp_enqueue_script('bootstrap-js', get_template_directory_uri() . '/dist/bootstrap/js/bootstrap.min.js', array( 'jquery' ), '', true);
+
+  // wp_enqueue_script('turbolinks-js', 'https://cdn.jsdelivr.net/npm/turbolinks@5.2.0/dist/turbolinks.min.js', null, '', false);
+
+  wp_enqueue_style( 'bootstrap-css', get_template_directory_uri() . '/dist/bootstrap.css');
+
+	wp_enqueue_style( 'fontawesome-css', get_template_directory_uri() . '/dist/fontawesome/css/all.css');
+
+  wp_enqueue_style( 'kicks-app-css', get_template_directory_uri() . '/style.css');
 }, 10);
 
 add_action( 'enqueue_block_editor_assets', function() {
 	wp_deregister_style( 'bootstrap-editor-css');
 	wp_dequeue_style( 'bootstrap-editor-css');
 
-	wp_register_style( 'bootstrap-editor-css', get_template_directory_uri() . '/assets/css/bootstrap-editor.css');
+	wp_register_style( 'bootstrap-editor-css', get_template_directory_uri() . '/dist/bootstrap-editor.css');
 	wp_enqueue_style( 'bootstrap-editor-css');
 }, 11);
 
@@ -149,3 +157,13 @@ register_nav_menus(array(
   'secondary' => __( 'Secondary Menu',  'kicks-app' ),
   'social'  => __( 'Social Links Menu', 'kicks-app' )
 ));
+
+add_filter('theme_icon_html', function($html, $name) {
+	return sprintf('<i class="far fa-%s"> </i>', $name);
+}, 10, 2);
+
+add_filter('the_category', function($list) {
+	print_r($list);
+
+	return $list;
+});

@@ -34,14 +34,13 @@
 		<?php if (has_header_image()): ?>
 			<?php get_template_part( 'template-parts/header/header', 'image' ); ?>
 		<?php endif; ?>
-		<div class="navigation-top bg-<?= get_theme_mod( 'colorscheme') ?: 'light'; ?>">
-			<div class="wrap container">
-				<?php get_template_part( 'template-parts/navigation/navigation', 'top' ); ?>
-			</div><!-- .wrap -->
+		<div class="navigation-top">
+			<?php get_template_part( 'template-parts/navigation/navigation', 'top' ); ?>
 		</div><!-- .navigation-top -->
 
 	</header><!-- #masthead -->
 
+	is front<?= twentyseventeen_is_frontpage(); ?>
 	<?php
 
 	/*
@@ -57,3 +56,6 @@
 
 	<div class="site-content-contain">
 		<div id="content" class="site-content">
+			<?php if ( function_exists('yoast_breadcrumb') && !twentyseventeen_is_frontpage()): ?>
+				<?php yoast_breadcrumb( '<div id="breadcrumbs" class="container">','</div>' ); ?>
+			<?php endif; ?>

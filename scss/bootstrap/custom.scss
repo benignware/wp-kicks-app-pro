@@ -1,0 +1,7 @@
+@media (min-width: 576px) {
+  .card-deck {
+    // FIXME: Apply calc on vars automatically
+    margin-right: calc(var(--card-deck-margin) * -1);
+    margin-left: calc(var(--card-deck-margin) * -1);
+  }
+}

@@ -51,8 +51,8 @@ function load_theme_defaults() {
   }
 
   $locations = array(
-    get_template_directory() . '/theme.css',
-    get_stylesheet_directory() . '/theme.css'
+    get_template_directory() . '/style.css',
+    get_stylesheet_directory() . '/style.css'
   );
 
   foreach ($locations as $file) {

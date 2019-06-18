@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4116810368cce786c69553206ce5fc2d",
+    "content-hash": "0275718baf9e54ed9f9b2dbf9b4bcfe7",
     "packages": [
         {
             "name": "composer/installers",
@@ -140,11 +140,11 @@
         },
         {
             "name": "benignware/bootstrap-hooks",
-            "version": "v0.1.0-alpha.5",
+            "version": "v0.1.0-alpha.7",
             "source": {
                 "type": "git",
                 "url": "https://github.com/benignware/wp-bootstrap-hooks.git",
-                "reference": "v0.1.0-alpha.5"
+                "reference": "v0.1.0-alpha.7"
             },
             "type": "wordpress-muplugin"
         },
@@ -160,11 +160,11 @@
         },
         {
             "name": "benignware/swiper-shortcode",
-            "version": "v0.1.0-beta.1",
+            "version": "v0.1.0-beta.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/benignware-labs/wp-swiper-shortcode.git",
-                "reference": "v0.1.0-beta.1"
+                "reference": "v0.1.0-beta.5"
             },
             "type": "wordpress-plugin"
         },
@@ -229,6 +229,24 @@
             "homepage": "https://wordpress.org/plugins/customizer-reset-by-wpzoom/"
         },
         {
+            "name": "wpackagist-plugin/fontmeister",
+            "version": "1.08",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/fontmeister/",
+                "reference": "tags/1.08"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/fontmeister.1.08.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/fontmeister/"
+        },
+        {
             "name": "wpackagist-plugin/wordpress-importer",
             "version": "0.6.4",
             "source": {
@@ -245,6 +263,24 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/wordpress-importer/"
+        },
+        {
+            "name": "wpackagist-plugin/wordpress-seo",
+            "version": "11.4",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/wordpress-seo/",
+                "reference": "tags/11.4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.11.4.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/wordpress-seo/"
         },
         {
             "name": "wptrt/theme-unit-test",
