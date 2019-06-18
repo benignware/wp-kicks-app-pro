@@ -1,5 +1,5 @@
 <?php
-
+/*
 add_action('after_setup_theme', function() {
   remove_theme_support( 'custom-header' );
 }, 11);
@@ -26,6 +26,4 @@ add_filter('shortcode_atts_basic_contact_form', function($out, $pairs, $atts, $s
     'template' => get_theme_file_path() . '/contact-form.php'
   ), $atts);
 }, 10, 4);
-
-
-// add_filter( 'post_gallery', 'swiper_gallery_shortcode', 11, 2 );
+*/

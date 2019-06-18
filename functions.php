@@ -177,7 +177,7 @@ register_nav_menus(array(
 ));
 
 add_filter('theme_icon_html', function($html, $name) {
-	return sprintf('<i class="fas far fa-%s"> </i>', $name);
+	return sprintf('<i class="far fas fa-%s"> </i>', $name);
 }, 10, 2);
 
 add_filter('the_category', function($list) {
@@ -189,4 +189,16 @@ add_filter('the_category', function($list) {
 
 add_filter('get_custom_logo', function($html) {
   return 'Test' . $html;
+}, 11);
+
+
+add_filter( 'get_search_form', function( $form ) {
+	$search_form_template = locate_template( 'searchform.php' );
+  if ( '' != $search_form_template ) {
+    ob_start();
+    require( $search_form_template );
+    $form = ob_get_clean();
+
+		return $form;
+  }
 }, 11);
