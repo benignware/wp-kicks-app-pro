@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d24cf488de43f52086e53a7236c1fa8",
+    "content-hash": "54ef3ddd2f40fe9f8eced2557d001a2b",
     "packages": [
         {
             "name": "composer/installers",
@@ -209,6 +209,24 @@
                 "wordpress"
             ],
             "time": "2015-01-21T14:32:26+00:00"
+        },
+        {
+            "name": "wpackagist-plugin/custom-archives",
+            "version": "3.0.2",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/custom-archives/",
+                "reference": "tags/3.0.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/custom-archives.3.0.2.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/custom-archives/"
         },
         {
             "name": "wpackagist-plugin/customizer-reset-by-wpzoom",

@@ -191,7 +191,7 @@ add_filter('get_custom_logo', function($html) {
   return 'Test' . $html;
 }, 11);
 
-
+/*
 add_filter( 'get_search_form', function( $form ) {
 	$search_form_template = locate_template( 'searchform.php' );
   if ( '' != $search_form_template ) {
@@ -202,3 +202,157 @@ add_filter( 'get_search_form', function( $form ) {
 		return $form;
   }
 }, 11);
+*/
+
+
+
+
+
+
+register_theme_vars([
+  'primary' => [
+    'label' => __('Primary'),
+    'type' => 'color',
+    'default' => '#007bff',
+    'section' => 'colors',
+    'editor' => true
+  ],
+  'secondary' => [
+    'default' => '#6c757d',
+    'editor' => true,
+    'label' => __('Secondary'),
+    'section' => 'colors',
+    'type' => 'color'
+  ],
+  'success' => [
+    'default' => '#28a745',
+    'editor' => true,
+    'label' => __('Success'),
+    'section' => 'colors',
+    'type' => 'color'
+  ],
+  'info' => [
+    'default' => '#17a2b8',
+    'editor' => true,
+    'label' => __('Info'),
+    'section' => 'colors',
+    'type' => 'color'
+  ],
+  'danger' => [
+    'default' => '#dc3545',
+    'editor' => true,
+    'label' => __('Danger'),
+    'section' => 'colors',
+    'type' => 'color'
+  ],
+  'warning' => [
+    'default' => '#ffc107',
+    'editor' => true,
+    'label' => __('Warning'),
+    'section' => 'colors',
+    'type' => 'color'
+  ],
+  'light' => [
+    'default' => '#f8f9fa',
+    'editor' => true,
+    'label' => __('Light'),
+    'section' => 'colors',
+    'type' => 'color'
+  ],
+  'dark' => [
+    'default' => '#343a40',
+    'editor' => true,
+    'label' => __('Dark'),
+    'section' => 'colors',
+    'type' => 'color'
+  ],
+  'body-bg' => [
+    'default' => 'white',
+    'label' => __('Body Background'),
+    'section' => 'common',
+    'type' => 'color'
+  ],
+  'body-color' => [
+    'default' => 'black',
+    'label' => __('Body Color'),
+    'section' => 'common',
+    'type' => 'color'
+  ],
+  'link-color' => [
+    'default' => 'black',
+    'label' => __('Link Color'),
+    'section' => 'typography',
+    'type' => 'color'
+  ],
+	'font-family-base' => [
+		'type' => 'font',
+		'section' => 'typography',
+		'default' => 'Verdana',
+		'label' => __('Font Family Base')
+	]
+  /*
+  'font-family-sans-serif' => [
+    'default' => 'Times New Roman',
+    'control' => [
+      'label' => __('Font Family Sans Serif'),
+      'type' => 'select',
+      'section' => 'typography',
+      'choices' => [
+        'Verdana',
+        'Times New Roman',
+        'Arial',
+        'Open Sans'
+      ]
+    ]
+  ],
+  'border-radius' => [
+    'default' => '3',
+    'unit' => 'px',
+    'control' => [
+      'label' => __('Border Radius'),
+      'type' => 'number',
+      'section' => 'components'
+    ]
+  ],
+  'border-width' => [
+    'default' => '1',
+    'unit' => 'px',
+    'control' => [
+      'label' => __('Border Width'),
+      'type' => 'number',
+      'section' => 'components'
+    ]
+  ],
+  'border-color' => [
+    'default' => 'rgba(222,226,230,1)',
+    'control' => [
+      'label' => __('Border Color'),
+      'type' => 'color',
+      'section' => 'components'
+    ]
+  ],
+  'card-border-color' => [
+    'default' => 'rgba(222,226,230,1)',
+    'control' => [
+      'label' => __('Card Border Color'),
+      'type' => 'color',
+      'section' => 'components'
+    ]
+  ],
+  'card-bg' => [
+    'default' => '#fff',
+    'control' => [
+      'label' => __('Card Background'),
+      'type' => 'color',
+      'section' => 'components'
+    ]
+  ],
+  'input-border-color' => [
+    'default' => '#ced4da',
+    'control' => [
+      'label' => __('Input Border Color'),
+      'type' => 'color',
+      'section' => 'forms'
+    ]
+  ]*/
+]);

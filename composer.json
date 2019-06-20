@@ -1,6 +1,6 @@
 {
   "name": "benignware/wp-kicks-app",
-  "version": "0.1.0-beta.4",
+  "version": "0.1.0-beta.5",
   "type": "wordpress-theme",
   "license": "MIT",
   "description": "Wordpress Kickstarter Theme",
@@ -95,7 +95,8 @@
     "wpackagist-plugin/customizer-reset-by-wpzoom": ">=1.0.1",
     "wpackagist-plugin/wordpress-seo": ">=9.7",
     "wpackagist-plugin/wordpress-importer": ">=0.6.4",
-    "wpackagist-plugin/fontmeister": ">=1.08"
+    "wpackagist-plugin/fontmeister": ">=1.08",
+    "wpackagist-plugin/custom-archives": ">=3.0.2"
   },
   "scripts": {
     "post-autoload-dump": [
