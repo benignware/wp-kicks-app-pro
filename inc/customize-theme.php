@@ -226,8 +226,7 @@ add_action( 'enqueue_block_editor_assets', function() {
 
 // Register sections
 add_action('customize_register', function($wp_customize) {
-  echo 'customize register...';
-  print_r(get_theme_fonts());
+
   $wp_customize->add_section('common', array(
     'title' => 'Common',
     'priority' => 100

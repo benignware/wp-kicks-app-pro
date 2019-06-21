@@ -356,3 +356,44 @@ register_theme_vars([
     ]
   ]*/
 ]);
+
+if (function_exists('register_swiper_theme')) {
+
+	foreach (array(
+		'primary',
+		'secondary',
+		'success',
+		'info',
+		'warning',
+		'danger',
+		'light',
+		'dark',
+		'gray-100',
+		'gray-200',
+		'gray-300',
+		'gray-400',
+		'gray-500',
+		'gray-600',
+		'gray-700',
+		'gray-800',
+		'gray-900'
+	) as $theme) {
+		register_swiper_theme($theme, array(
+			'classes' => array(
+				'swiper-button-next' => 'swiper-button-' . $theme,
+				'swiper-button-prev' => 'swiper-button-' . $theme,
+				'swiper-pagination' => 'swiper-pagination-' . $theme,
+				'swiper-scrollbar' => 'swiper-scrollbar-' . $theme
+			)
+		));
+	}
+
+	add_filter( 'swiper_options', function($options) {
+		$options = array_merge(array(
+	    'theme' => 'primary'
+	  ), $options);
+	  return $options;
+	});
+
+	wp_enqueue_style( 'swiper-themes-css', get_template_directory_uri() . '/dist/swiper-themes.css' );
+}

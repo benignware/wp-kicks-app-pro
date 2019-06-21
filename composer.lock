@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "54ef3ddd2f40fe9f8eced2557d001a2b",
+    "content-hash": "5bb77a4b3ff3f4980dc1f270d17143cb",
     "packages": [
         {
             "name": "composer/installers",
@@ -160,11 +160,11 @@
         },
         {
             "name": "benignware/swiper-shortcode",
-            "version": "v0.1.0-beta.5",
+            "version": "v0.1.0-beta.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/benignware-labs/wp-swiper-shortcode.git",
-                "reference": "v0.1.0-beta.5"
+                "reference": "v0.1.0-beta.6"
             },
             "type": "wordpress-plugin"
         },

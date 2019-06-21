@@ -1,6 +1,6 @@
 {
   "name": "wp-kicks-app",
-  "version": "0.1.0-beta.5",
+  "version": "0.1.0-beta.6",
   "description": "Wordpress theme",
   "private": true,
   "main": "dist/main.js",
@@ -63,6 +63,7 @@
     "build:bootstrap": "cpx './node_modules/bootstrap/dist/js/**/*.*' dist/bootstrap/js && node ./build.js",
     "build:popper": "cpx './node_modules/popper.js/dist/**/*.*' dist/popper.js",
     "build:fontawesome": "cpx './node_modules/@fortawesome/fontawesome-free/**/*.*' dist/fontawesome",
+    "build:swiper-themes": "node-sass scss/swiper-themes.scss dist/swiper-themes.css --output-style expanded",
     "build": "run-p \"build:*\""
   },
   "dependencies": {
