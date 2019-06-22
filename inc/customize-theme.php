@@ -1,5 +1,51 @@
 <?php
 
+function get_color_by_name($name) {
+  return array(
+    'white' => '#ffffff',
+    'black' => '#000000',
+    'red' => '#ff0000',
+    'yellow' => '#FFFF00',
+    'green' => '#008000',
+    'blue' => '#0000ff',
+    'cyan' => '#00FFFF',
+    'purple' => '#800080',
+    'gray' => '#808080',
+    'teal' => '#008080',
+    'orange' => '#ffa500'
+  )[$name] ?: $name;
+}
+
+function adjustBrightness($hexCode, $adjustPercent) {
+  if (strpos($hexCode, 'rgb') === 0) {
+    $rgb_string = preg_replace('~rgba?\s*\(\s*(.*)\s*\)~', '$1', $hexCode);
+    $rgb = array_map('trim', array_slice(explode(',', $rgb_string), 0, 3));
+  } else {
+
+    $hexCode = get_color_by_name($hexCode);
+
+    if (strpos($hexCode, '#') === 0) {
+      $hexCode = ltrim($hexCode, '#');
+      $normalized_percent = $adjustPercent / 100;
+
+      if (strlen($hexCode) == 3) {
+        $hexCode = $hexCode[0] . $hexCode[0] . $hexCode[1] . $hexCode[1] . $hexCode[2] . $hexCode[2];
+      }
+
+      $rgb = array_map('hexdec', str_split($hexCode, 2));
+    }
+  }
+
+  foreach ($rgb as & $color) {
+    $adjustableLimit = $normalized_percent < 0 ? $color : 255 - $color;
+    $adjustAmount = ceil($adjustableLimit * $normalized_percent);
+
+    $color = str_pad(dechex($color + $adjustAmount), 2, '0', STR_PAD_LEFT);
+  }
+
+  return '#' . implode($rgb);
+}
+
 /*
 function get_theme_vars() {
   global $theme_vars;
@@ -7,6 +53,27 @@ function get_theme_vars() {
   return $theme_vars;
 }
 */
+
+function register_theme_option($name, $attributes = []) {
+  global $theme_options;
+
+  if (!isset($theme_options)) {
+    $theme_options = [];
+  }
+
+  $theme_options[$name] = array_merge([
+    'name' => $name,
+    'label' => $name,
+    'type' => 'string',
+    'section' => null
+  ], $attributes);
+}
+
+function register_theme_options($options) {
+  foreach ($options as $name => $attributes) {
+    register_theme_option($name, $attributes);
+  }
+}
 
 function register_theme_var($name, $attributes = []) {
   global $theme_vars;
@@ -18,18 +85,17 @@ function register_theme_var($name, $attributes = []) {
   $theme_vars[$name] = array_merge([
     'name' => $name,
     'label' => $name,
-    'type' => 'text',
-    'section' => 'theme'
+    'type' => 'string',
+    'section' => null
   ], $attributes);
 }
 
 function register_theme_vars($vars) {
-  global $theme_vars;
-
   foreach ($vars as $name => $attributes) {
     register_theme_var($name, $attributes);
   }
 }
+
 
 /*
 function register_theme_font($name, $attributes = []) {
@@ -89,39 +155,92 @@ function load_theme_defaults() {
   return $result;
 }
 
+function get_theme_fonts_x() {
+  global $theme_fonts;
 
-add_action('customize_register', function($wp_customize) {
-  global $theme_vars;
+  if (isset($theme_fonts)) {
+    return $theme_fonts;
+  }
 
-  /*
+  $theme_fonts = array();
+
+
   $theme_resources = get_theme_resources();
 
-  echo '<br/>';
-  echo '*********';
-  echo '<br/>';
 
-  foreach ($theme_resources as $src => $object) {
-    echo $src;
-    echo '<br/>';
-    print_r($object);
-
-    echo '<br/>';
-    echo '-----';
-    echo '<br/>';
+  foreach ($theme_resources as $theme_resource) {
+    $theme_fonts = array_unique(array_merge($theme_resource['fonts'], $theme_fonts));
   }
 
 
+  return $theme_fonts;
+}
+
+add_action('customize_register', function($wp_customize) {
+  global $theme_options;
+
+  /*
+  print_r($theme_options);
+  exit;
+  */
+  // $theme_defaults = load_theme_defaults();
+
+  $fonts = get_theme_fonts_x();
+
+  // $theme_vars = x_get_theme_vars();
+  $theme_resources = get_theme_resources();
+
+  $defaults = get_theme_defaults();
+
+  /*
+  echo '<pre>';
+  var_dump($defaults);
+
+
+  echo '</pre>';
   exit;
   */
 
-  $theme_defaults = load_theme_defaults();
-
+  /*print_r($fonts);
+  exit;
 
   $fonts = get_theme_fonts();
+  */
 
-  foreach ($theme_vars as $name => $attributes) {
+  $pattern = '~^\s*var\s*\(\s*--([a-zA-Z_-]*)\s*\)\s*$~';
+
+  foreach ($theme_options as $name => $attributes) {
+
+    $default = $defaults[$name] ?: $attributes['default'];
+
+    $c = 0;
+
+    while (preg_match($pattern, $default, $matches))  {
+      $default = $defaults[$matches[1]] ?: $attributes['default'];
+
+      $c++;
+
+      if ($c > 10) {
+        break;
+      }
+    }
+
+    if ($attributes['type'] === 'color') {
+      $default = get_color_by_name($default);
+    }
+
+    if ($attributes['type'] === 'font') {
+      $default = trim(array_slice(explode(',', $default), 0, 1)[0], '\'" ');
+    }
+
+    /*
+    echo 'OPTION: ' . $name . '---->' . $default;
+    echo '<br/>';
+    */
+
+
     $wp_customize->add_setting($name, [
-      'default' => $theme_defaults[$name] ?: $attributes['default']
+      'default' => $default
     ]);
 
     $type = $attributes['type'];
@@ -173,7 +292,7 @@ add_action('customize_register', function($wp_customize) {
 });
 
 function get_theme_custom_css() {
-  global $theme_vars;
+  $theme_vars = get_theme_vars();
 
   $theme_mods = get_theme_mods();
 
@@ -208,24 +327,35 @@ EOT;
   return $css;
 }
 
-add_action( 'wp_enqueue_scripts', function() {
-  $css = get_theme_custom_css();
+
+function enqueue_theme_custom_css() {
+  if (wp_doing_ajax() && $_GET['action'] === 'theme_resources') {
+    return;
+  }
+
+  $css = x_get_theme_custom_css();
 
   wp_register_style( 'kicks-app-custom-style', false );
   wp_enqueue_style( 'kicks-app-custom-style' );
   wp_add_inline_style('kicks-app-custom-style', $css );
-}, 11);
+}
 
-add_action( 'enqueue_block_editor_assets', function() {
-  $css = get_theme_custom_css();
+add_action( 'wp_enqueue_scripts', 'enqueue_theme_custom_css', 100);
+add_action( 'enqueue_block_editor_assets', 'enqueue_theme_custom_css', 100);
 
-  wp_register_style( 'kicks-app-custom-style', false );
-  wp_enqueue_style( 'kicks-app-custom-style' );
-  wp_add_inline_style('kicks-app-custom-style', $css );
-}, 12);
 
 // Register sections
 add_action('customize_register', function($wp_customize) {
+
+  // $theme_vars = x_get_theme_vars();
+
+  /*
+  echo '<pre>';
+  var_dump($theme_vars);
+
+  echo '</pre>';
+  exit;
+  */
 
   $wp_customize->add_section('common', array(
     'title' => 'Common',
@@ -272,10 +402,10 @@ add_action( 'after_setup_theme', function() {
 });
 
 
-function get_theme_resources() {
+function load_theme_resources() {
   global $wp_styles;
 
-  $resources = array();
+  $resource_links = array();
 
   foreach ($wp_styles->registered as $key => $item) {
 
@@ -305,8 +435,23 @@ function get_theme_resources() {
       continue;
     }
 
-    $resources[] = $item->src;
+    $resource_links[] = $item->src;
 
+  }
+
+  $resources = array();
+
+  foreach ($resource_links as $url) {
+    $content = theme_fetch_resource($url);
+    $data = theme_parse_resource_data($content);
+
+    $resources[] = array_merge(
+      $data,
+      array(
+        'url' => $url,
+        // 'content' => $content
+      )
+    );
   }
 
   return $resources;
@@ -315,6 +460,34 @@ function get_theme_resources() {
 
 function theme_fetch_resource($url) {
   global $theme_resources;
+
+  $local_directory_uris = array(
+    [ get_stylesheet_directory_uri(), get_stylesheet_directory() ],
+    [ get_template_directory_uri(), get_template_directory() ]
+  );
+
+  $local_files = array_map(
+    function($item) use($url) {
+      return $item[1] . substr($url, strlen($item[0]));
+    },
+    array_values(
+        array_filter($local_directory_uris, function($item) use ($url) {
+        return (substr($url, 0, strlen($item[0])) === $item[0]);
+      })
+    )
+  );
+  $local_file = $local_files[0];
+
+  if ($local_file) {
+    ob_start();
+    include $local_file;
+    $content = ob_get_contents();
+    ob_end_clean();
+
+    if ($content) {
+      return $content;
+    }
+  }
 
   if (function_exists('curl_init')) {
     $ch = curl_init();
@@ -326,13 +499,15 @@ function theme_fetch_resource($url) {
     curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
     //curl_setopt($ch, CURLOPT_TIMEOUT, 1); // Removed
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Added
-    $data = curl_exec($ch);
+    $content = curl_exec($ch);
     curl_close($ch);
+
+    return $content;
   } else {
     echo 'CUrl is not supported';
   }
 
-  return $data;
+  return null;
 }
 
 function theme_parse_resource_data($content) {
@@ -341,12 +516,18 @@ function theme_parse_resource_data($content) {
     'fonts' => array()
   );
 
+  /*
+  echo '<pre>';
+  echo $content;
+  echo '</pre>';
+  */
+
   // Parse vars
-  preg_match_all("~\s*:root\s*\{([^}]*)\s*\}~", $content, $root_decl_matches, PREG_SET_ORDER);
+  preg_match_all("~\s:root\s*\{([^}]*)\s*\}~", $content, $root_decl_matches, PREG_SET_ORDER);
 
   foreach($root_decl_matches as $root_decl_match) {
     $decl = $root_decl_match[1];
-    preg_match_all("~\s*--([a-zA-Z_-]*):([^;]*)\s*~", $decl, $var_matches, PREG_SET_ORDER);
+    preg_match_all("~\s*--([a-zA-Z_-]*):\s*([^;]*)\s*~", $decl, $var_matches, PREG_SET_ORDER);
 
     foreach($var_matches as $var_match) {
       $name = $var_match[1];
@@ -362,14 +543,12 @@ function theme_parse_resource_data($content) {
 
   if (count($font_face_matches) > 0) {
     foreach($font_face_matches as $font_face_match) {
-      preg_match_all("~\s*font-family:([^;]*)\s*~", $font_face_match[1], $font_family_matches, PREG_SET_ORDER);
+      preg_match_all("~\s*font-family:\s*([^;]*)\s*~", $font_face_match[1], $font_family_matches, PREG_SET_ORDER);
 
       foreach($font_family_matches as $font_family_match) {
-        $font_family = $font_family_match[1];
+        $font_family = trim($font_family_match[1], ' \'"');
 
         $result['fonts'] = array_unique(array_merge($result['fonts'], array($font_family)));
-
-
       }
     }
   }
@@ -410,6 +589,7 @@ add_action( 'wp_head', function() {
 }, 11);
 */
 
+
 function get_theme_fonts() {
   global $theme_resources;
 
@@ -417,12 +597,20 @@ function get_theme_fonts() {
     return array_merge($result, $current['fonts']);
   }, array());
 
+  print_r($fonts);
+  exit;
+
   return $fonts;
 }
+
 
 function get_theme_vars() {
   global $theme_resources;
   global $theme_vars;
+
+  if (!isset($theme_resources) || !$theme_resources) {
+    $theme_resources = array();
+  }
 
   $vars = array_reduce($theme_resources, function($result, $current) {
     return array_merge($result, $current['vars']);
@@ -438,25 +626,230 @@ function get_theme_vars() {
 }
 
 
-add_action( 'wp_ajax_foobar', 'my_ajax_foobar_handler' );
+function get_theme_resources() {
+  global $theme_resources;
 
-function my_ajax_foobar_handler() {
+  if (isset($theme_resources)) {
+    return $theme_resources;
+  }
+
+  $url = admin_url( 'admin-ajax.php' ) . '?action=theme_resources';
+
+  $url = 'http://127.0.0.1/wp-admin/admin-ajax.php?action=theme_resources';
+
+  if (function_exists('curl_init')) {
+    $ch = curl_init();
+
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (http://www.googlebot.com/bot.html)');
+    curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
+    // curl_setopt($ch, CURLOPT_TIMEOUT, 100); // Removed
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Added
+    $content = curl_exec($ch);
+
+    if ($content === false) {
+      echo 'Curl-Error: ' . curl_error($ch);
+      exit;
+    }
+
+    curl_close($ch);
+  } else {
+    echo 'CUrl is not supported';
+    exit;
+  }
+
+  if ($content) {
+    $theme_resources = json_decode($content, true);
+  } else {
+    $theme_resources = array();
+  }
+
+  return $theme_resources;
+}
+
+add_action( 'wp_ajax_nopriv_theme_resources', function() {
   global $wp_styles;
     // Make your response and echo it.
+
 
     ob_start();
     wp_head();
     ob_end_clean();
-    $r = get_theme_resources();
 
-    // echo json_encode($r);
-    print_r($r);
+    $resources = load_theme_resources();
+
+    $output = json_encode($resources);
+
+    header('Content-Type: application/json');
+
+    echo $output;
+
     // Don't forget to stop execution afterward.
     wp_die();
+});
+
+
+function load_theme_manifest($file) {
+  ob_start();
+  include $file;
+  $content = ob_get_contents();
+  ob_end_clean();
+
+  if ($content) {
+    return json_decode($content, true);
+  }
+
+  return array();
 }
+
+function get_theme_defaults() {
+  $theme_resources = get_theme_resources();
+
+  $defaults = array();
+  foreach ($theme_resources as $theme_resource) {
+    /*
+    echo 'GET DEFAULT VaLUES: ' . $theme_resource['url'];
+    echo '<br/>';
+    */
+    $defaults = array_merge($defaults, $theme_resource['vars']);
+  }
+
+  return $defaults;
+}
+
+function x_get_theme_vars() {
+  global $theme_vars;
+
+
+  $defaults = get_theme_defaults();
+  /*
+  echo '<pre>';
+  var_dump($defaults);
+
+  echo '</pre>';
+
+  exit;*/
+
+  $result = array();
+
+
+  foreach ($theme_vars as $key => $data) {
+    // $value = isset($data['value']) ? $data['value'] : $data['default'];
+    $value = isset($defaults[$key]) ? $defaults[$key] : $data['value'];
+    $implicit = isset($data['implicit']) ? $data['implicit'] : false;
+
+    if (!$implicit) {
+      $value = get_theme_mod($key, $value);
+      $result[$key] = $value;
+    }
+  }
+
+  $pattern = '~^\s*var\s*\(\s*--([a-zA-Z_-]*)\s*\)\s*$~';
+
+  foreach ($theme_vars as $key => $data) {
+    $implicit = isset($data['implicit']) ? $data['implicit'] : false;
+
+    if ($implicit) {
+      $source_var = $data['source'];
+      $source_default = $theme_vars[$source_var]['default'];
+      $source_value = $result[$source_var];
+
+      /*
+      echo 'IMPLICIT VAR: ' . $key . ' SOURCE VAR: ' . $source_var . ' VALUE: ' . $source_value;
+      echo '<br/>';
+      */
+      $c = 0;
+
+      while (preg_match($pattern, $source_value, $matches))  {
+        $source_var = $matches[1];
+        $source_value = $result[$source_var] ?: $source_value;
+        $source_default = $theme_vars[$source_var]['default'] ?: $source_default;
+
+        /*
+        $c++;
+
+        if ($c > 10) {
+          echo 'BREAK';
+          break;
+        }
+        */
+      }
+
+      if ($data['filter']) {
+        $value = apply_filters(
+          'theme_implicit_' . $data['filter']['name'],
+          $source_value,
+          $data['filter']['amount'],
+          $data,
+          $data['source']
+        );
+      }
+      $result[$key] = $value;
+    }
+  }
+
+
+  return $result;
+}
+
+$manifest = load_theme_manifest(get_template_directory() . '/dist/bootstrap.css.json');
+
+foreach ($manifest as $key => $value) {
+  # code...
+  register_theme_var($key, $value);
+
+}
+
+
+
 
 /*
 $url = admin_url( 'admin-ajax.php' );
 echo $url;
 exit;
 */
+
+
+add_filter('theme_implicit_darken', function($value, $amount, $data, $source) {
+  return adjustBrightness($value, intval($amount) * -1);
+}, 10, 4);
+
+add_filter('theme_implicit_lighten', function($value, $amount, $data, $source) {
+  return adjustBrightness($value, intval($amount));
+}, 10, 4);
+
+
+function x_get_theme_custom_css() {
+  $theme_vars = x_get_theme_vars();
+
+
+  /*
+  echo '<pre>';
+  var_dump($theme_vars);
+
+  echo '</pre>';
+  exit;
+  */
+
+  $css = <<<EOT
+:root {
+
+EOT;
+  foreach ($theme_vars as $name => $value) {
+    if ($value) {
+      $css.= <<<EOT
+  --$name: $value;
+
+EOT;
+    }
+  }
+
+  $css.= <<<EOT
+}
+
+EOT;
+
+  return $css;
+}

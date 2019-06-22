@@ -18,7 +18,9 @@
   <div class="input-group">
     <input type="search" class="form-control" id="<?php echo $unique_id; ?>" class="search-field" placeholder="<?php echo esc_attr_x( 'Search &hellip;', 'placeholder', 'twentyseventeen' ); ?>" value="<?php echo get_search_query(); ?>" name="s" />
     <div class="input-group-append">
-      <button type="submit" class="btn btn-outline-secondary search-submit"><?php theme_icon( 'search' ); ?><span class="screen-reader-text"><?php echo _x( 'Search', 'submit button', 'twentyseventeen' ); ?></span></button>
+      <button type="submit" class="btn btn-outline-secondary search-submit">
+        <?php theme_icon( 'search' ); ?><span class="screen-reader-text"><?php echo _x( 'Search', 'submit button', 'twentyseventeen' ); ?></span>
+      </button>
     </div>
   </div>
 </form>

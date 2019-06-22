@@ -186,11 +186,11 @@ add_filter('the_category', function($list) {
 	return $list;
 });
 
-
+/*
 add_filter('get_custom_logo', function($html) {
   return 'Test' . $html;
 }, 11);
-
+*/
 /*
 add_filter( 'get_search_form', function( $form ) {
 	$search_form_template = locate_template( 'searchform.php' );
@@ -204,12 +204,7 @@ add_filter( 'get_search_form', function( $form ) {
 }, 11);
 */
 
-
-
-
-
-
-register_theme_vars([
+register_theme_options([
   'primary' => [
     'label' => __('Primary'),
     'type' => 'color',
@@ -287,9 +282,21 @@ register_theme_vars([
 	'font-family-base' => [
 		'type' => 'font',
 		'section' => 'typography',
-		'default' => 'Verdana',
+		// 'default' => 'inherit',
 		'label' => __('Font Family Base')
-	]
+	],
+	'headings-font-family' => [
+		'type' => 'font',
+		'section' => 'typography',
+		'default' => 'var(--body-color)',
+		'label' => __('Headings Font Family')
+	],
+	'headings-color' => [
+    'default' => 'initial',
+    'label' => __('Headings Color'),
+    'section' => 'typography',
+    'type' => 'color'
+  ],
   /*
   'font-family-sans-serif' => [
     'default' => 'Times New Roman',

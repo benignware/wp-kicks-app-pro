@@ -102,6 +102,7 @@ const build = async(entry, dest = 'dist') => {
   ];
 
   const exclude = [
+    'emphasized-link-hover-darken-percentage',
     'theme-color-interval',
     'modal-dialog-margin',
     'modal-dialog-margin-y-sm-up',
@@ -124,12 +125,15 @@ const build = async(entry, dest = 'dist') => {
     'input-btn-focus-width',
     'rfs-font-size-unit',
     'rfs-breakpoint-unit',
-    'grid-gutter-width'
+    // 'grid-gutter-width'
   ];
 
   // const file = path.resolve(__dirname, './scss/bootstrap.scss');
 
   const file = entry;
+
+  const implicit = {};
+  const manifest = {};
 
   const options = {
     file,
@@ -235,12 +239,28 @@ const build = async(entry, dest = 'dist') => {
 
         if (color instanceof String) {
           const variable = parseVariable(color.getValue());
-          // console.log('variable', variable);
+
+          // console.log('DARKEN ', color.getValue(), variable);
+
+          // Implicit variable
+
+          const varName = `${variable}-darken-${Math.round(amount.getValue())}`;
+          implicit[varName] = {
+            type: 'color',
+            name: varName,
+            source: variable,
+            implicit: true,
+            filter: {
+              name: 'darken',
+              amount: amount.getValue()
+            }
+          }
+
+          // console.log('implicit', implicit);
 
           if (variable) {
-
-            // console.log('variable', variable);
-            return new String(`var(--${variable}-dark, var(--${variable}))`);
+            // console.log('daRKEN REPLACE VAR..', variable);
+            return new String(`var(--${varName})`);
           }
         }
 
@@ -263,9 +283,24 @@ const build = async(entry, dest = 'dist') => {
           const variable = parseVariable(color.getValue());
           // console.log('variable', variable);
 
+          // Implicit variable
+
+          const varName = `${variable}-lighten-${Math.round(amount.getValue())}`;
+          implicit[varName] = {
+            type: 'color',
+            name: varName,
+            source: variable,
+            implicit: true,
+            filter: {
+              name: 'lighten',
+              amount: amount.getValue()
+            }
+          }
+
+          // console.log('implicit', implicit);
+
           if (variable) {
-            // console.log('variable', variable);
-            return new String(`var(--${variable}-light, var(--${variable}))`);
+            return new String(`var(--${varName})`);
           }
         }
 
@@ -322,11 +357,22 @@ const build = async(entry, dest = 'dist') => {
         // return null;
       }
 
+      if (key.indexOf('heading') >= 0) {
+        console.log('VAR: ', key, type, raw, result);
+      }
+
       if (typeof raw === 'string') {
-        // console.log('VAR: ', key, type, result, 'expression: ', result.declarations[0].expression);
+
+
+
+        // console.log('VAR: ', key, type, raw);
 
         return {
           [name]: {
+            type: {
+              'SassNumber': 'number',
+              'SassColor': 'color'
+            }[type] || 'string',
             value: raw,
             expression: result.declarations[0].expression
           }
@@ -340,7 +386,7 @@ const build = async(entry, dest = 'dist') => {
       return item;
     }));
 
-
+    // console.log('manifest: ', manifest);
 
     // const variables = { ...theme };
 
@@ -350,15 +396,11 @@ const build = async(entry, dest = 'dist') => {
 
     // data  = '';
 
-    data = `${Object.entries(variables).map(([ key, { value } ]) => {
-      // console.log('VALUE: ', key, value);
-      return `$${key}: var(--${key});`;
-    }).join('\n')}` + data;
 
 
-    data = data + `:root {\n
-    ${Object.entries(variables).map(([ key, { value, expression } ]) => {
+    const varis = Object.assign({}, ...Object.entries(variables).map(([ key, { value: source, type, expression } ]) => {
       // console.log('DEFINE VAR', key, value, expression);
+      let value = source;
       let ast = parse(expression);
 
       // Create a function to traverse/modify the AST
@@ -378,10 +420,46 @@ const build = async(entry, dest = 'dist') => {
 
       if (expr.match(/^var\s*\(--[a-z_-]*\)$/)) {
         value = expr;
+      } else {
+        const [match, name, variable, amount ] = expr.match(/^(darken|lighten)\s*\(\s*var\s*\(--([a-zA-Z_-]*)\)\s*,\s*(\d+)/) || [];
+
+
+        if (match) {
+          const implicitName = `${variable}-${name}-${amount}`;
+          value = `var(--${implicitName})`;
+
+          implicit[implicitName] = {
+            implicit: true,
+            type: 'color',
+            source: variable,
+            filter: {
+              name, amount
+            }
+          };
+        }
       }
 
-      return `--${key}: ${value};`;
-    }).join('\n')}\n}\n`;
+      return {
+        [key]: {
+          default: source,
+          value,
+          type
+        }
+      };
+    }));
+
+    data = `${Object.entries(varis).map(([ key, obj ]) => {
+      let { value: sourceValue } = obj;
+      let value = `var(--${key})`;
+
+      if (sourceValue.match(/^var\s*\(--[a-z_-]*\)$/)) {
+        // value = sourceValue;
+      }
+
+      return `$${key}: ${value};`;
+    }).join('\n')}` + data;
+
+    data = data + `:root {\n${Object.entries(varis).map(([ key, { value } ]) => `--${key}: ${value};`).join('\n')}\n}\n`;
 
     const result = await renderAsync({
       ...options,
@@ -395,9 +473,17 @@ const build = async(entry, dest = 'dist') => {
 
     const ok = await writeFileAsync(dest, result.css);
 
+    // console.log('implicit', implicit);
+    const manifestOk = await writeFileAsync(`${dest}.json`, JSON.stringify({
+      ...varis,
+      ...implicit
+    }, null, 2));
+
   } catch (error) {
     console.log('ERROR', error);
   }
+
+
 };
 
 const main = async() => {
@@ -410,6 +496,7 @@ const main = async() => {
     path.resolve(__dirname, './scss/bootstrap/bootstrap-editor.scss'),
     path.join(__dirname, 'dist/bootstrap-editor.css')
   );
+
 };
 
 main();

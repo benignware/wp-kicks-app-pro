@@ -1,6 +1,6 @@
 {
   "name": "benignware/wp-kicks-app",
-  "version": "0.1.0-beta.6",
+  "version": "0.1.0-beta.7",
   "type": "wordpress-theme",
   "license": "MIT",
   "description": "Wordpress Kickstarter Theme",
@@ -36,12 +36,12 @@
     "type": "package",
     "package": {
       "name": "benignware/bootstrap-hooks",
-      "version": "v0.1.0-alpha.7",
+      "version": "v0.1.0-alpha.8",
       "type": "wordpress-muplugin",
       "source": {
         "type": "git",
         "url": "https://github.com/benignware/wp-bootstrap-hooks.git",
-        "reference": "v0.1.0-alpha.7"
+        "reference": "v0.1.0-alpha.8"
       }
     }
   }, {
@@ -72,12 +72,12 @@
     "type": "package",
     "package": {
       "name": "benignware/swiper-shortcode",
-      "version": "v0.1.0-beta.6",
+      "version": "v0.1.0-beta.7",
       "type": "wordpress-plugin",
       "source": {
         "type": "git",
         "url": "https://github.com/benignware-labs/wp-swiper-shortcode.git",
-        "reference": "v0.1.0-beta.6"
+        "reference": "v0.1.0-beta.7"
       }
     }
   }],
@@ -88,10 +88,10 @@
   "require-dev": {
     "wptrt/theme-unit-test": "dev-master",
     "wemakecustom/wp-mu-loader": "*",
-    "benignware/bootstrap-hooks": ">=0.1.0-alpha.7",
+    "benignware/bootstrap-hooks": ">=0.1.0-alpha.8",
     "benignware/sticky-widget-area": ">=0.0.10",
     "benignware/basic-contact-form": ">=0.1.1",
-    "benignware/swiper-shortcode": ">=0.1.0-beta.6",
+    "benignware/swiper-shortcode": ">=0.1.0-beta.7",
     "wpackagist-plugin/customizer-reset-by-wpzoom": ">=1.0.1",
     "wpackagist-plugin/wordpress-seo": ">=9.7",
     "wpackagist-plugin/wordpress-importer": ">=0.6.4",
