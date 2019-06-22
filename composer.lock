@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40e3b8c45a29950886868f892ba773fe",
+    "content-hash": "a6f7a426a88e34f098147e4f4c979062",
     "packages": [
         {
             "name": "composer/installers",
@@ -140,11 +140,11 @@
         },
         {
             "name": "benignware/bootstrap-hooks",
-            "version": "v0.1.0-alpha.8",
+            "version": "v0.1.0-alpha.9",
             "source": {
                 "type": "git",
                 "url": "https://github.com/benignware/wp-bootstrap-hooks.git",
-                "reference": "v0.1.0-alpha.8"
+                "reference": "v0.1.0-alpha.9"
             },
             "type": "wordpress-muplugin"
         },
