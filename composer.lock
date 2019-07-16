@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a6f7a426a88e34f098147e4f4c979062",
+    "content-hash": "ca4c787d6e7c89e690fe424f48fb997a",
     "packages": [
         {
             "name": "composer/installers",
@@ -160,11 +160,11 @@
         },
         {
             "name": "benignware/swiper-shortcode",
-            "version": "v0.1.0-beta.7",
+            "version": "v0.1.0-beta.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/benignware-labs/wp-swiper-shortcode.git",
-                "reference": "v0.1.0-beta.7"
+                "reference": "v0.1.0-beta.12"
             },
             "type": "wordpress-plugin"
         },
@@ -284,15 +284,15 @@
         },
         {
             "name": "wpackagist-plugin/wordpress-seo",
-            "version": "11.4",
+            "version": "11.6",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/wordpress-seo/",
-                "reference": "tags/11.4"
+                "reference": "tags/11.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.11.4.zip"
+                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.11.6.zip"
             },
             "require": {
                 "composer/installers": "~1.0"
