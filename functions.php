@@ -1,7 +1,7 @@
 <?php
 
 
-require_once 'inc/customizer_2.php';
+// require_once 'inc/customizer_2.php';
 require_once 'inc/customize-theme.php';
 require_once 'inc/template-tags.php';
 require_once 'inc/template-functions.php';

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ca4c787d6e7c89e690fe424f48fb997a",
+    "content-hash": "81f90f7735a7c3b2e5563956cb229186",
     "packages": [
         {
             "name": "composer/installers",
@@ -284,15 +284,15 @@
         },
         {
             "name": "wpackagist-plugin/wordpress-seo",
-            "version": "11.6",
+            "version": "11.8",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/wordpress-seo/",
-                "reference": "tags/11.6"
+                "reference": "tags/11.8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.11.6.zip"
+                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.11.8.zip"
             },
             "require": {
                 "composer/installers": "~1.0"
@@ -308,8 +308,7 @@
                 "url": "https://github.com/WPTRT/theme-unit-test.git",
                 "reference": "master"
             },
-            "type": "library",
-            "time": "2019-05-12T05:00:52+00:00"
+            "type": "library"
         }
     ],
     "aliases": [],
