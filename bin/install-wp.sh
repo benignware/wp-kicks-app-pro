@@ -20,4 +20,4 @@ wp option update permalink_structure "/%year%/%monthnum%/%postname%/" --skip-the
 wp plugin activate wordpress-importer
 
 # Activate theme.
-wp theme activate kicks-app
+wp theme activate kicks-app-pro

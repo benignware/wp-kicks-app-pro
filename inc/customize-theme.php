@@ -36,6 +36,10 @@ function adjustBrightness($hexCode, $adjustPercent) {
     }
   }
 
+  if (!is_array($rgb)) {
+    return '';
+  }
+
   foreach ($rgb as & $color) {
     $adjustableLimit = $normalized_percent < 0 ? $color : 255 - $color;
     $adjustAmount = ceil($adjustableLimit * $normalized_percent);
@@ -140,7 +144,7 @@ function get_theme_fonts_x() {
   }
 
   $theme_fonts = array();
-  $theme_resources = get_theme_resources();
+  $theme_resources = get_theme_resources() ?: array();
 
   foreach ($theme_resources as $theme_resource) {
     $theme_fonts = array_unique(array_merge($theme_resource['fonts'], $theme_fonts));
@@ -275,11 +279,14 @@ function enqueue_theme_custom_css() {
 
   wp_register_style( 'kicks-app-custom-style', false );
   wp_enqueue_style( 'kicks-app-custom-style' );
-  wp_add_inline_style('kicks-app-custom-style', $css );
+
+  if ($css) {
+    wp_add_inline_style('kicks-app-custom-style', $css );
+  }
 }
 
-add_action( 'wp_enqueue_scripts', 'enqueue_theme_custom_css', 100);
-add_action( 'enqueue_block_editor_assets', 'enqueue_theme_custom_css', 100);
+add_action( 'wp_enqueue_scripts', 'enqueue_theme_custom_css', 9);
+add_action( 'enqueue_block_editor_assets', 'enqueue_theme_custom_css', 9);
 
 
 // Register sections
@@ -460,9 +467,6 @@ function get_theme_fonts() {
     return array_merge($result, $current['fonts']);
   }, array());
 
-  print_r($fonts);
-  exit;
-
   return $fonts;
 }
 
@@ -501,6 +505,10 @@ function get_theme_resources() {
 
   $url = $urlinfo['scheme'] . '://' . $_SERVER['SERVER_ADDR'] . $urlinfo['path'] . ($urlinfo['query'] ? '?' . $urlinfo['query'] : '');
 
+  /*
+  echo $url;
+  exit;
+  */
 
   if (function_exists('curl_init')) {
     $ch = curl_init();
@@ -570,14 +578,16 @@ function load_theme_manifest($file) {
 }
 
 function get_theme_defaults() {
-  $theme_resources = get_theme_resources();
+  $theme_resources = get_theme_resources() ?: array();
 
   $defaults = array();
   foreach ($theme_resources as $theme_resource) {
+
     /*
     echo 'GET DEFAULT VaLUES: ' . $theme_resource['url'];
     echo '<br/>';
     */
+
     $defaults = array_merge($defaults, $theme_resource['vars']);
   }
 
@@ -586,7 +596,6 @@ function get_theme_defaults() {
 
 function x_get_theme_vars() {
   global $theme_vars;
-
 
   $defaults = get_theme_defaults();
   /*
@@ -600,16 +609,34 @@ function x_get_theme_vars() {
   $result = array();
 
 
+  // Process regular vars
+//  echo 'process regular vars<br/>';
+
   foreach ($theme_vars as $key => $data) {
     // $value = isset($data['value']) ? $data['value'] : $data['default'];
     $value = isset($defaults[$key]) ? $defaults[$key] : $data['value'];
     $implicit = isset($data['implicit']) ? $data['implicit'] : false;
 
-    if (!$implicit) {
-      $value = get_theme_mod($key, $value);
-      $result[$key] = $value;
+    if ($value && !$implicit) {
+      try {
+        // We cannot process url for some reason
+        if (preg_match('~url\s*\(~', $value)) {
+          continue;
+        }
+
+        // Go ahead
+        $value = get_theme_mod($key) ?: $value;
+        $result[$key] = $value;
+      } catch (Exception $e) {
+        echo 'Exception: ',  $e->getMessage(), "\n";
+        exit;
+      }
     }
   }
+
+
+  // Process implicit vars
+  // echo 'process implicit vars<br/>';
 
   $pattern = '~^\s*var\s*\(\s*--([a-zA-Z_-]*)\s*\)\s*$~';
 
@@ -689,7 +716,6 @@ add_filter('theme_implicit_lighten', function($value, $amount, $data, $source) {
 function x_get_theme_custom_css() {
   $theme_vars = x_get_theme_vars();
 
-
   /*
   echo '<pre>';
   var_dump($theme_vars);
@@ -698,11 +724,16 @@ function x_get_theme_custom_css() {
   exit;
   */
 
+
   $css = <<<EOT
 :root {
 
 EOT;
   foreach ($theme_vars as $name => $value) {
+    if (preg_match('~url\s*\(~', $value)) {
+      continue;
+    }
+
     if ($value) {
       $css.= <<<EOT
   --$name: $value;
