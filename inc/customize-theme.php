@@ -46,13 +46,6 @@ function adjustBrightness($hexCode, $adjustPercent) {
   return '#' . implode($rgb);
 }
 
-/*
-function get_theme_vars() {
-  global $theme_vars;
-
-  return $theme_vars;
-}
-*/
 
 function register_theme_option($name, $attributes = []) {
   global $theme_options;
@@ -95,22 +88,6 @@ function register_theme_vars($vars) {
     register_theme_var($name, $attributes);
   }
 }
-
-
-/*
-function register_theme_font($name, $attributes = []) {
-  global $theme_fonts;
-
-  if (!isset($theme_fonts)) {
-    $theme_fonts = [];
-  }
-
-  $theme_vars[$name] = array_merge([
-    'name' => $name
-  ], $attributes);
-}
-*/
-
 
 function load_theme_defaults() {
   global $theme_defaults;
@@ -163,15 +140,11 @@ function get_theme_fonts_x() {
   }
 
   $theme_fonts = array();
-
-
   $theme_resources = get_theme_resources();
-
 
   foreach ($theme_resources as $theme_resource) {
     $theme_fonts = array_unique(array_merge($theme_resource['fonts'], $theme_fonts));
   }
-
 
   return $theme_fonts;
 }
@@ -179,45 +152,18 @@ function get_theme_fonts_x() {
 add_action('customize_register', function($wp_customize) {
   global $theme_options;
 
-  /*
-  print_r($theme_options);
-  exit;
-  */
-  // $theme_defaults = load_theme_defaults();
-
   $fonts = get_theme_fonts_x();
-
-  // $theme_vars = x_get_theme_vars();
   $theme_resources = get_theme_resources();
-
   $defaults = get_theme_defaults();
-
-  /*
-  echo '<pre>';
-  var_dump($defaults);
-
-
-  echo '</pre>';
-  exit;
-  */
-
-  /*print_r($fonts);
-  exit;
-
-  $fonts = get_theme_fonts();
-  */
 
   $pattern = '~^\s*var\s*\(\s*--([a-zA-Z_-]*)\s*\)\s*$~';
 
   foreach ($theme_options as $name => $attributes) {
-
     $default = $defaults[$name] ?: $attributes['default'];
 
     $c = 0;
-
     while (preg_match($pattern, $default, $matches))  {
       $default = $defaults[$matches[1]] ?: $attributes['default'];
-
       $c++;
 
       if ($c > 10) {
@@ -232,12 +178,6 @@ add_action('customize_register', function($wp_customize) {
     if ($attributes['type'] === 'font') {
       $default = trim(array_slice(explode(',', $default), 0, 1)[0], '\'" ');
     }
-
-    /*
-    echo 'OPTION: ' . $name . '---->' . $default;
-    echo '<br/>';
-    */
-
 
     $wp_customize->add_setting($name, [
       'default' => $default
@@ -293,11 +233,9 @@ add_action('customize_register', function($wp_customize) {
 
 function get_theme_custom_css() {
   $theme_vars = get_theme_vars();
-
   $theme_mods = get_theme_mods();
 
   $css = '';
-
 
   $css.= <<<EOT
 :root {
@@ -324,8 +262,7 @@ EOT;
 
 EOT;
 
-  return '';
-  // return $css;
+  return $css;
 }
 
 
@@ -347,17 +284,6 @@ add_action( 'enqueue_block_editor_assets', 'enqueue_theme_custom_css', 100);
 
 // Register sections
 add_action('customize_register', function($wp_customize) {
-
-  // $theme_vars = x_get_theme_vars();
-
-  /*
-  echo '<pre>';
-  var_dump($theme_vars);
-
-  echo '</pre>';
-  exit;
-  */
-
   $wp_customize->add_section('common', array(
     'title' => 'Common',
     'priority' => 100
@@ -377,29 +303,6 @@ add_action('customize_register', function($wp_customize) {
     'title' => 'Typography',
     'priority' => 100
   ));
-});
-
-
-add_action( 'after_setup_theme', function() {
-  global $theme_vars;
-
-  // echo 'after setup theme';
-
-  /*
-  $editor_color_palette = apply_filters('theme_editor_colors', array());
-
-  foreach ($editor_color_palette as $index => $color) {
-    if (is_string($color) && isset($theme_vars[$color])) {
-      $editor_color_palette[$index] = array(
-        'name' => $theme_vars[$color]['label'] ?: $theme_vars[$color]['control']['label'],
-        'slug' => $color,
-        'color' => get_theme_mod($color, $theme_vars[$color])
-      )
-    }
-  }
-  */
-
-  // add_theme_support( 'editor-color-palette', $editor_color_palette);
 });
 
 
@@ -449,8 +352,7 @@ function load_theme_resources() {
     $resources[] = array_merge(
       $data,
       array(
-        'url' => $url,
-        // 'content' => $content
+        'url' => $url
       )
     );
   }
@@ -517,12 +419,6 @@ function theme_parse_resource_data($content) {
     'fonts' => array()
   );
 
-  /*
-  echo '<pre>';
-  echo $content;
-  echo '</pre>';
-  */
-
   // Parse vars
   preg_match_all("~\s:root\s*\{([^}]*)\s*\}~", $content, $root_decl_matches, PREG_SET_ORDER);
 
@@ -556,40 +452,6 @@ function theme_parse_resource_data($content) {
 
   return $result;
 }
-
-/*
-add_filter( 'style_loader_src', function($html, $handle = null, $href = null, $media = null ) {
-  global $theme_resources;
-
-  echo 'style_loader_tag';
-
-  if (!isset($theme_resources)) {
-    $theme_resources = array();
-  }
-
-  $content = theme_fetch_resource($href);
-  $data = theme_parse_resource_data($content);
-
-  $theme_resources[] = array_merge(
-    $data, array(
-      'url' => $href
-    )
-  );
-
-  return $html;
-}, 11, 4);
-*/
-
-/*
-add_action( 'wp_head', function() {
-  global $theme_resources;
-  echo 'AFTER THEME SETUP...<br/>';
-
-  print_r(get_theme_fonts());
-  return $html;
-}, 11);
-*/
-
 
 function get_theme_fonts() {
   global $theme_resources;
@@ -635,8 +497,10 @@ function get_theme_resources() {
   }
 
   $url = admin_url( 'admin-ajax.php' ) . '?action=theme_resources';
+  $urlinfo = parse_url($url);
 
-  $url = 'http://127.0.0.1/wp-admin/admin-ajax.php?action=theme_resources';
+  $url = $urlinfo['scheme'] . '://' . $_SERVER['SERVER_ADDR'] . $urlinfo['path'] . ($urlinfo['query'] ? '?' . $urlinfo['query'] : '');
+
 
   if (function_exists('curl_init')) {
     $ch = curl_init();
@@ -657,7 +521,7 @@ function get_theme_resources() {
 
     curl_close($ch);
   } else {
-    echo 'CUrl is not supported';
+    echo 'Curl is not supported';
     exit;
   }
 

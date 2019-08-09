@@ -1,13 +1,13 @@
 {
-  "name": "wp-kicks-app",
-  "version": "0.1.0-beta.10",
+  "name": "wp-kicks-app-pro",
+  "version": "0.1.0-beta.11",
   "description": "Wordpress theme",
   "private": true,
   "main": "dist/main.js",
   "style": "dist/main.css",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benignware-labs/wp-kicks-app.git"
+    "url": "git+https://github.com/benignware/wp-kicks-app-pro.git"
   },
   "keywords": [
     "wordpress",
@@ -16,13 +16,13 @@
   "author": "Rafael Nowrotek",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/benignware-labs/wp-kicks-app/issues"
+    "url": "https://github.com/benignware/wp-kicks-app-oro/issues"
   },
-  "homepage": "https://github.com/benignware-labs/wp-kicks-app#readme",
+  "homepage": "https://github.com/benignware/wp-kicks-app-pro#readme",
   "devDependencies": {
     "@wordpress/browserslist-config": "^2.2.2",
     "autoprefixer": "^9.1.5",
-    "chokidar-cli": "^1.2.1",
+    "chokidar-cli": "^2.0.0",
     "cpx": "^1.5.0",
     "glob": "^7.1.4",
     "mkdirp": "^0.5.1",
@@ -61,7 +61,8 @@
     "xbuild:print": "node-sass print.scss print.css --output-style expanded && postcss -r print.css",
     "xbuild": "run-p \"build:*\"",
     "watch": "chokidar \"**/*.scss\" -c \"npm run build\" --initial",
-    "build:bootstrap": "cpx './node_modules/bootstrap/dist/js/**/*.*' dist/bootstrap/js && node ./build.js",
+    "build:bootstrap-js": "cpx './node_modules/bootstrap/dist/js/**/*.*' dist/bootstrap/js",
+    "build:bootstrap-css": "node ./build.js",
     "build:popper": "cpx './node_modules/popper.js/dist/**/*.*' dist/popper.js",
     "build:fontawesome": "cpx './node_modules/@fortawesome/fontawesome-free/**/*.*' dist/fontawesome",
     "build:swiper-themes": "node-sass scss/swiper-themes.scss dist/swiper-themes.css --output-style expanded",

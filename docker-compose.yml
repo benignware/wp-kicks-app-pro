@@ -25,8 +25,8 @@ services:
     restart: always
     volumes:
       - wordpress:/var/www/html
-      - .:/var/www/html/wp-content/themes/kicks-app
-      - ./test/fixtures/kicks-app-child:/var/www/html/wp-content/themes/kicks-app-child
+      - .:/var/www/html/wp-content/themes/kicks-app-pro
+      - ./test/fixtures/kicks-app-pro-child:/var/www/html/wp-content/themes/kicks-app-pro-child
       - .uploads:/var/www/html/wp-content/uploads
       - .plugins:/var/www/html/wp-content/plugins
       - .mu-plugins:/var/www/html/wp-content/mu-plugins
@@ -39,7 +39,7 @@ services:
       - wordpress
     volumes:
       - wordpress:/var/www/html
-      - .:/var/www/html/wp-content/themes/kicks-app
+      - .:/var/www/html/wp-content/themes/kicks-app-pro
       - ./bin/install-wp.sh:/usr/local/bin/install-wp
       - .uploads:/var/www/html/wp-content/uploads
       - .plugins:/var/www/html/wp-content/plugins

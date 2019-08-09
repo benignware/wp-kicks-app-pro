@@ -1,17 +1,17 @@
 @charset "UTF-8";
 /*
-Theme Name: Kicks App Child
+Theme Name: Kicks App Pro Child
 Author: Rafael Nowrotek
 Author URI: http://benignware.com
-Description: Demo child theme for the Kicks App Theme
-Template: kicks-app
+Description: Demo child theme for the Kicks App Pro Theme
+Template: kicks-app-pro
 Version: 0.0.1
 */
 
 :root {
   --primary: orange;
-  --body-bg: white;
-  --body-color: black;
+  --body-bg: red;
+  --body-color: white;
   --font-family-sans-serif: 'Open Sans', sans-serif;
   --h2-font-size: 30px;
 }

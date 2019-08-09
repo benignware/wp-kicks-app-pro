@@ -12,6 +12,98 @@ const { sync: mkdirp } = require('mkdirp');
 let { parse, stringify } = require('scss-parser');
 let createQueryWrapper = require('query-ast');
 
+const stringifyAst = ($, node = null) => {
+  if (!node) {
+    node = $('stylesheet').get()[0];
+  }
+
+  let value = '';
+
+  if (node) {
+    const type = node.type;
+
+    if (typeof node.value === 'string') {
+      switch(node.type) {
+        case 'comment_singleline':
+          value = `//${node.value}`;
+          break;
+        case 'atkeyword':
+          value = `@${node.value}`;
+          break;
+        case 'string_double':
+          value = `"${node.value}"`;
+          break;
+        case 'string_single':
+          value = `'${node.value}'`;
+          break;
+        case 'variable':
+          value = `$${node.value}`;
+          break;
+        default:
+          value = node.value;
+      }
+
+    } else if (Array.isArray(node.value)) {
+      switch(node.type) {
+        case 'pseudo_class':
+          value+= ':';
+          break;
+        case 'class':
+          value+= '.';
+          break;
+        case 'interpolation':
+          value+= '#{';
+          break;
+        case 'block':
+          value+= '{\n';
+          break;
+        case 'attribute':
+          value+= '[';
+          break;
+        case 'arguments':
+          value+='(';
+          break;
+        default:
+          // console.log('UNREC ARRAY', node.type);
+      }
+
+      value+= `${node.value.map((node) => {
+        return stringifyAst($, node);
+      }).join('')}`;
+
+      switch(node.type) {
+        case 'block':
+          value+= '\n}\n';
+          break;
+        case 'interpolation':
+          value+= '}';
+          break;
+        case 'attribute':
+          value+= ']';
+          break;
+        case 'arguments':
+          value+=')';
+          break;
+      }
+    }
+  }
+
+  return value;
+}
+
+function getIncludePaths(uri) {
+  // From https://github.com/sass/node-sass/issues/762#issuecomment-80580955
+  var arr = this.options.includePaths.split(path.delimiter),
+      gfn = getFileNames.bind(this),
+      paths = [];
+
+  arr.forEach(function(includePath) {
+    paths = paths.concat(gfn(path.resolve(process.cwd(), includePath, uri)));
+  });
+
+  return paths;
+};
+
 function rgbaToHex(orig){
  var rgb = orig.replace(/\s/g,'').match(/^rgba?\((\d+),(\d+),(\d+)/i);
  return (rgb && rgb.length === 4) ? "#" +
@@ -104,25 +196,25 @@ const build = async(entry, dest = 'dist') => {
   const exclude = [
     'emphasized-link-hover-darken-percentage',
     'theme-color-interval',
-    'modal-dialog-margin',
-    'modal-dialog-margin-y-sm-up',
-    'alert-padding-x',
-    'jumbotron-padding',
-    'table-border-width',
-    'border-width',
-    'btn-padding-x',
-    'input-btn-padding-x',
-    'btn-padding-x-sm',
-    'input-btn-padding-x-sm',
-    'btn-padding-x-lg',
-    'input-btn-padding-x-lg',
-    'font-size-base',
-    'custom-control-indicator-border-width',
-    'input-border-width',
-    'input-btn-border-width',
-    'custom-range-thumb-focus-box-shadow-width',
-    'input-focus-width',
-    'input-btn-focus-width',
+    // 'modal-dialog-margin',
+    // 'modal-dialog-margin-y-sm-up',
+    // 'alert-padding-x',
+    // 'jumbotron-padding',
+    // 'table-border-width',
+    // 'border-width',
+    // 'btn-padding-x',
+    // 'input-btn-padding-x',
+    // 'btn-padding-x-sm',
+    // 'input-btn-padding-x-sm',
+    // 'btn-padding-x-lg',
+    // 'input-btn-padding-x-lg',
+    // 'font-size-base',
+    // 'custom-control-indicator-border-width',
+    // 'input-border-width',
+    // 'input-btn-border-width',
+    // 'custom-range-thumb-focus-box-shadow-width',
+    // 'input-focus-width',
+    // 'input-btn-focus-width',
     'rfs-font-size-unit',
     'rfs-breakpoint-unit',
     // 'grid-gutter-width'
@@ -315,13 +407,31 @@ const build = async(entry, dest = 'dist') => {
     const { vars: { global: vars = {} } = {} } = await sassExtract.render(options);
 
     const variables = Object.assign({}, ...Object.entries(vars).map(([ key, result ]) => {
-      let { type, value, declarations: [{ expression, position }] } = result;
+      let { type, value, declarations } = result;
+      const [{ expression, position }] = declarations;
+
+      for (declaration of declarations) {
+
+      }
+
 
       const name = key.replace(/^\$/, '');
       const isExcluded = exclude.includes(name);
 
+      if (name === 'border-width') {
+        // console.log('hello border width', declarations);
+        // process.exit();
+      }
+
+
       if (isExcluded) {
         return null;
+      }
+
+      // console.log('PROCESS VAR:', name, type, expression);
+
+      if (expression.match('times')) {
+        console.log('CALCULATION', name, value, expression);
       }
 
       const isUnit = (expression.match(/unit/) || []).length > 0;
@@ -331,6 +441,10 @@ const build = async(entry, dest = 'dist') => {
       }
 
       let raw = value;
+
+      if (type === 'SassMap') {
+        // console.log('MAP:' , name, value, expression);
+      }
 
       if (type === 'SassList') {
         if (!expression.match(/^\s*\(/) && value.every((item) => item.type === 'SassString') && value.some((item) => [ 'sans-serif', 'serif', 'monospace' ].includes(item.value))) {
@@ -357,9 +471,9 @@ const build = async(entry, dest = 'dist') => {
         // return null;
       }
 
-      if (key.indexOf('heading') >= 0) {
+      /*if (key.indexOf('heading') >= 0) {
         console.log('VAR: ', key, type, raw, result);
-      }
+      }*/
 
       if (typeof raw === 'string') {
 
@@ -464,7 +578,127 @@ const build = async(entry, dest = 'dist') => {
     const result = await renderAsync({
       ...options,
       includePaths: options.includePaths.concat(path.dirname(file)),
-      data
+      data,
+      importer: function(url, prev) {
+
+        const { includePaths } = this.options || {};
+        const relativePath = path.relative(prev, url);
+
+        // console.log('import url: ', url);
+        const file = (Array.isArray(includePaths)
+          ? [includePaths]
+          : includePaths.split(/\:/)
+        ).reduce((result, dir) => {
+          let f = path.join(process.cwd(), dir, `${relativePath}.scss`);
+
+          if (!fs.existsSync(f)) {
+
+            const { dir, base } = path.parse(f);
+            f = `${dir}/_${base}`;
+          }
+
+          return fs.existsSync(f) ? f : result;
+        }, null);
+
+        if (file) {
+
+
+
+          const content = fs.readFileSync(file, 'utf-8');
+
+          // console.log('content', content);
+
+          // const match = content.match(/\*/);
+
+          // const match = content.match(/var\s*\(\s*--[a-zA-Z0-9-_]*\s*\)/);
+
+          //console.log('keys: ', Object.keys(varis));
+          const match = file.match(/(?:tables|custom-forms|button-group|jumbotron|alert|modal)\.scss/);
+          // const match = content.match(/\*/);
+
+          if (match) {
+            // console.log('process file: ', file);
+            // console.log('****** match: ', match);
+            const ast = parse(content);
+            let $ = createQueryWrapper(ast);
+
+            const ff = $().get();
+
+            const result = $('operator');
+
+            const times = result.filter((wrapper) => {
+
+              return ['*'].includes(wrapper.node.value);
+            });
+
+            const all = times.map((wrapper) => {
+              let c = 0;
+              let prev = $(wrapper).prev();
+
+              while (prev.nodes[0].node.type === 'space') {
+                // console.log('get next prev', prev);
+                prev = prev.prev();
+                c++;
+
+                if (c > 10) {
+                  console.log('break!!!!');
+                  break;
+                }
+              }
+
+              let next = $(wrapper).next();
+              c = 0;
+
+              while (next.nodes[0].node.type === 'space') {
+                // console.log('get next prev', prev);
+                next = next.next();
+                c++;
+
+                if (c > 10) {
+                  console.log('break next!!!!');
+                  break;
+                }
+              }
+
+              $(prev.nodes).before({
+                type: 'punctuation',
+                value: 'calc(#{'
+              });
+
+              $(prev.nodes).after({
+                type: 'punctuation',
+                value: '}'
+              });
+
+              $(next.nodes).before({
+                type: 'punctuation',
+                value: '#{'
+              });
+
+              $(next.nodes).after({
+                type: 'punctuation',
+                value: '})'
+              });
+
+              return prev;
+            });
+
+            const str = stringifyAst($);
+
+            return { contents: str };
+
+          }
+
+          //
+
+        }
+        // return null;
+
+        // return new Error('nothing to do here');
+
+
+        return { file: url };
+      },
     });
 
     if (!fs.existsSync(path.dirname(dest))) {
@@ -492,11 +726,12 @@ const main = async() => {
     path.join(__dirname, 'dist/bootstrap.css')
   );
 
+  /*
   await build(
     path.resolve(__dirname, './scss/bootstrap/bootstrap-editor.scss'),
     path.join(__dirname, 'dist/bootstrap-editor.css')
   );
-
+  */
 };
 
 main();
