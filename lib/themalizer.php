@@ -637,7 +637,7 @@ function get_theme_resources() {
   $url = admin_url( 'admin-ajax.php' ) . '?action=theme_resources';
   $urlinfo = parse_url($url);
 	//
-  $host = $_SERVER['SERVER_ADDR'];
+  $host = $_SERVER['SERVER_NAME'];
 	$port = $_SERVER['SERVER_PORT'] && substr($_SERVER['SERVER_PORT'], 0, 1) !== '8' ? $_SERVER['SERVER_PORT'] : '';
 
 	//
