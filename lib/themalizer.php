@@ -626,30 +626,30 @@ function get_theme_resources() {
     return $theme_resources;
   }
 
-	if (!is_admin()) {
-		$theme_resources = load_theme_resources();
-
-		if ($theme_resources) {
-			return $theme_resources;
-		}
-	}
+	// if (!is_admin()) {
+	// 	$theme_resources = load_theme_resources();
+	//
+	// 	if ($theme_resources) {
+	// 		return $theme_resources;
+	// 	}
+	// }
 
   $url = admin_url( 'admin-ajax.php' ) . '?action=theme_resources';
   $urlinfo = parse_url($url);
-
-  /*
-
+	//
   $host = $_SERVER['SERVER_ADDR'];
+	$port = $_SERVER['SERVER_PORT'] && substr($_SERVER['SERVER_PORT'], 0, 1) !== '8' ? $_SERVER['SERVER_PORT'] : '';
 
-  $url = $urlinfo['scheme'] . '://' . $host . $urlinfo['path'] . ($urlinfo['query'] ? '?' . $urlinfo['query'] : '');
-
-  echo $url;
-  echo '<br/>';
-  */
-
-  $host = $_SERVER['SERVER_NAME'];
-	// $host = $_SERVER['SERVER_ADDR'];
-  $url = $urlinfo['scheme'] . '://' . $host . $urlinfo['path'] . ($urlinfo['query'] ? '?' . $urlinfo['query'] : '');
+	//
+  $url = $urlinfo['scheme'] . '://' . $host . ($port ? ':' . $port : '') . $urlinfo['path'] . ($urlinfo['query'] ? '?' . $urlinfo['query'] : '');
+	//
+  // */
+	//
+  // $host = $_SERVER['SERVER_NAME'];
+	// $host = $_SERVER['SERVER_NAME'];
+	//
+	// // $host = $_SERVER['SERVER_ADDR'];
+  // $url = $urlinfo['scheme'] . '://' . $host . $urlinfo['path'] . ($urlinfo['query'] ? '?' . $urlinfo['query'] : '');
 
   if (function_exists('curl_init')) {
     $ch = curl_init();
