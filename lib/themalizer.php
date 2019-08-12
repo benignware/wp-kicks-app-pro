@@ -220,7 +220,7 @@ add_action('customize_register', function($wp_customize) {
 
     $sections = [
       'components' => [
-        'pattern' => '~^(?:jumbotron|pagination|border|custom-control|component|blockquote|btn|dropdown|modal|navbar|popover|progress|tooltip|badge|toast|card|alert|list|thumbnail|breadcrumb|carousel|spinner|caret)~'
+        'pattern' => '~^(?:nav|jumbotron|pagination|border|custom-|component|blockquote|btn|dropdown|modal|navbar|popover|progress|tooltip|badge|toast|card|alert|list|thumbnail|breadcrumb|carousel|spinner|caret)~'
       ],
 			'layout' => [
         'pattern' => '~^(?:grid|spacer)~'
