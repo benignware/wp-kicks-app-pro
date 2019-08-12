@@ -1,5 +1,20 @@
 <?php
 
+require_once 'controls/Theme_Customize_Color_Control.php';
+require_once 'controls/Theme_Customize_Control.php';
+//
+
+
+function themalize_humanize($str) {
+	$str = trim(strtolower($str));
+	$str = preg_replace('/[^a-z0-9\s+]/', ' ', $str);
+	$str = preg_replace('/\s+/', ' ', $str);
+	$str = explode(' ', $str);
+	$str = array_map('ucwords', $str);
+
+	return implode(' ', $str);
+}
+
 function get_color_by_name($name) {
   return array(
     'white' => '#ffffff',
@@ -16,14 +31,43 @@ function get_color_by_name($name) {
   )[$name] ?: $name;
 }
 
+function get_color_value($value) {
+	if (preg_match('~^\s*var\(\s*--([a-zA-Z_-]+)\s*\)\s*$~', $value)) {
+		return $value;
+	}
+	$value = get_color_by_name($value);
+	$value = preg_replace('~rgba\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*,\s*1\s*\)~', 'rgb($1, $2, $3)', $value);
+
+	if (preg_match('~rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)~is', $value, $output, PREG_SET_ORDER)) {
+		$matches = $output[0];
+		$value = call_user_func_array('sprintf', [
+			"#%02x%02x%02x", $matches[1], $matches[2], $matches[3]
+		]);
+	}
+
+	return $value;
+}
+
+function get_font_value($value) {
+	if (preg_match('~^\s*var\(\s*--([a-zA-Z_-]+)\s*\)\s*$~', $value)) {
+		return $value;
+	}
+
+	$fonts = explode(',', $value);
+	$fonts = array_map(function($string) {
+		return trim($string, '\'" ');
+	}, $fonts);
+
+	return $fonts[0];
+}
+
 function adjustBrightness($hexCode, $adjustPercent) {
+	$hexCode = get_color_value($hexCode);
+
   if (strpos($hexCode, 'rgb') === 0) {
     $rgb_string = preg_replace('~rgba?\s*\(\s*(.*)\s*\)~', '$1', $hexCode);
     $rgb = array_map('trim', array_slice(explode(',', $rgb_string), 0, 3));
   } else {
-
-    $hexCode = get_color_by_name($hexCode);
-
     if (strpos($hexCode, '#') === 0) {
       $hexCode = ltrim($hexCode, '#');
       $normalized_percent = $adjustPercent / 100;
@@ -52,17 +96,18 @@ function adjustBrightness($hexCode, $adjustPercent) {
 
 
 function register_theme_option($name, $attributes = []) {
+  // echo 'REGISTER THEME OPTION ' . $name . '<br/>';
   global $theme_options;
 
   if (!isset($theme_options)) {
     $theme_options = [];
   }
 
+  $type = $attributes['type'];
+
   $theme_options[$name] = array_merge([
     'name' => $name,
-    'label' => $name,
-    'type' => 'string',
-    'section' => null
+    'type' => $type
   ], $attributes);
 }
 
@@ -81,7 +126,7 @@ function register_theme_var($name, $attributes = []) {
 
   $theme_vars[$name] = array_merge([
     'name' => $name,
-    'label' => $name,
+    // 'label' => $name,
     'type' => 'string',
     'section' => null
   ], $attributes);
@@ -91,49 +136,6 @@ function register_theme_vars($vars) {
   foreach ($vars as $name => $attributes) {
     register_theme_var($name, $attributes);
   }
-}
-
-function load_theme_defaults() {
-  global $theme_defaults;
-
-  if (isset($theme_defaults)) {
-    return $theme_defaults;
-  }
-
-  $locations = array(
-    get_template_directory() . '/style.css',
-    get_stylesheet_directory() . '/style.css'
-  );
-
-  foreach ($locations as $file) {
-    $result = array();
-
-    if (file_exists($file)) {
-      ob_start();
-      include $file;
-      $content = ob_get_contents();
-      ob_end_clean();
-
-      preg_match_all("~\s*:root\s*\{([^}]*)\s*\}~", $content, $decl_matches, PREG_SET_ORDER);
-
-      foreach($decl_matches as $decl_match) {
-        $decl = $decl_match[1];
-        preg_match_all("~\s*--([a-zA-Z_-]*):([^;]*)\s*~", $decl, $var_matches, PREG_SET_ORDER);
-
-        foreach($var_matches as $var_match) {
-          $name = $var_match[1];
-          $value = $var_match[2];
-
-          $result[$name] = $value;
-        }
-
-      }
-    }
-  }
-
-  $theme_defaults = $result;
-
-  return $result;
 }
 
 function get_theme_fonts_x() {
@@ -163,11 +165,15 @@ add_action('customize_register', function($wp_customize) {
   $pattern = '~^\s*var\s*\(\s*--([a-zA-Z_-]*)\s*\)\s*$~';
 
   foreach ($theme_options as $name => $attributes) {
-    $default = $defaults[$name] ?: $attributes['default'];
+    $default = $defaults[$name] ?: $attributes['value'];
+		$default_value = $default ?: $attributes['default'];
 
     $c = 0;
     while (preg_match($pattern, $default, $matches))  {
-      $default = $defaults[$matches[1]] ?: $attributes['default'];
+			$next_name = $matches[1];
+			if ($defaults[$next_name]) {
+				$default = $defaults[$next_name];
+			}
       $c++;
 
       if ($c > 10) {
@@ -175,113 +181,145 @@ add_action('customize_register', function($wp_customize) {
       }
     }
 
-    if ($attributes['type'] === 'color') {
-      $default = get_color_by_name($default);
-    }
-
-    if ($attributes['type'] === 'font') {
-      $default = trim(array_slice(explode(',', $default), 0, 1)[0], '\'" ');
-    }
-
-    $wp_customize->add_setting($name, [
-      'default' => $default
-    ]);
-
     $type = $attributes['type'];
+    $value = $default ?: $attributes['value'];
+		$value = trim($value);
+
+    if ($type === 'color') {
+			$value = get_color_value($value);
+      $default_value = get_color_value($default_value);
+    }
+
+    if ($type === 'font') {
+			$value = get_font_value($value);
+      $default_value = get_font_value($default_value);
+    }
+
+		$is_reference = preg_match('~^\s*var\(\s*--([a-zA-Z_-]+)\s*\)\s*$~', $value, $matches);
+
+		if ($is_reference) {
+			$reference = $matches[1];
+			$reference_label = themalize_humanize($reference);
+		}
+
+		$setting_default = $is_reference ? $value : $default_value;
+
+		// echo '----> REGISTER THEME OPTION:' . $name . '  VALUE: ' . $value . ' DEFAULT: ' . $default;
+    // // print_r($attributes);
+    // echo '<br/>';
+
+    $setting = [
+      'default' => $setting_default
+    ];
+
+    $wp_customize->add_setting($name, $setting);
+
+
+    $label = $attributes['label'] ?: themalize_humanize($name);
+    $description = $attributes['description'];
+
+    $sections = [
+      'components' => [
+        'pattern' => '~^(?:jumbotron|pagination|border|custom-control|component|blockquote|btn|dropdown|modal|navbar|popover|progress|tooltip|badge|toast|card|alert|list|thumbnail|breadcrumb|carousel|spinner|caret)~'
+      ],
+			'layout' => [
+        'pattern' => '~^(?:grid|spacer)~'
+      ],
+			'content' => [
+        'pattern' => '~^(?:table|spacer|hr|mark|kbd|code|pre)~'
+      ],
+      'forms' => [
+        'pattern' => '~(?:form|^input|^label)~'
+      ],
+      'typography' => [
+        'pattern' => '~(?:font-|^link|^paragraph|^headings|^display|^text)~',
+        'type' => 'font'
+      ],
+      'colors' => [
+        'type' => 'color'
+      ]
+    ];
+
+    $section = $attributes['section'];
+
+    if (!$section) {
+      $section = array_keys(array_filter($sections, function($section) use ($attributes) {
+        if (isset($section['pattern']) && preg_match($section['pattern'], $attributes['name'])) {
+          return true;
+        }
+        if (isset($section['type']) && $attributes['type'] === $section['type']) {
+          return true;
+        }
+      }))[0] ?: 'uncategorized';
+    }
+
+
+
+		$args = array_merge(array(
+			'label' => $label,
+			'section' =>  $section,
+			'settings' => $name,
+			'priority' => 0
+		), $attributes['control'] ?: [], [
+			'type' => $type === 'color' ? 'var_color' : 'variable'
+		]);
+
+		$default_label = $default . ' (' . ($is_reference ? $reference_label : 'Default') . ')';
 
     switch ($type) {
       case 'color':
-        $wp_customize->add_control(
-          new WP_Customize_Color_Control(
-            $wp_customize,
-            $name,
-            array_merge(array(
-              'label' => ($attributes['label'] ?: $name),
-              'section' =>  ($attributes['section'] ?: 'theme_parameters'),
-              'settings' => $name,
-              'priority' => 10
-            ), $attributes['control'] ?: [])
-          )
+
+        $control = new Theme_Customize_Color_Control(
+          $wp_customize,
+          $name,
+          $args
         );
+
+        $wp_customize->add_control($control);
         break;
       case 'font':
-        $wp_customize->add_control( $name, array(
-          'type' => 'select',
-          'section' =>  ($attributes['section'] ?: 'theme_parameters'),
-          'label' => ($attributes['label'] ?: $name),
-          'description' => $attributes['description'],
-          'choices' => array_reduce($fonts, function($result, $current) {
-            return array_merge($result, array(
-              $current => __( $current ),
-            ));
-          }, array())
-        ));
 
+
+        // echo 'REGISTER THEME CONTROL:' . $label . '  TYPE: ' . $type . ' SECTION: ' . $section . ' VALUE: ' . $value;
+        // // print_r($attributes);
+        // echo '<br/>';
+
+
+				// print_r($fonts);
+				// exit;
+
+
+
+				$control = new Theme_Customize_Control(
+          $wp_customize,
+          $name,
+          array_merge(
+						$args,
+						[
+							'choices' => array_reduce($fonts, function($result, $current) {
+		            return array_merge($result, array(
+		              $current => __( $current ),
+		            ));
+		          }, array(
+								'' => $default_label
+							))
+						]
+					)
+        );
+
+        $wp_customize->add_control($control);
         break;
       default:
         $wp_customize->add_control(
-          new WP_Customize_Control(
+          new Theme_Customize_Control(
             $wp_customize,
             $name,
-            array_merge(array(
-              'label' => ($attributes['label'] ?: __($name)),
-              'section' =>  ($attributes['section'] ?: 'theme_parameters'),
-              'settings' => $name,
-              'priority' => 10
-            ), $attributes['control'] ?: [])
+            $args
           )
         );
     }
   }
 });
-
-function get_theme_custom_css() {
-  $theme_vars = get_theme_vars();
-  $theme_mods = get_theme_mods();
-
-  $css = '';
-
-  $css.= <<<EOT
-:root {
-
-EOT;
-  foreach ($theme_vars as $name => $attributes) {
-    $theme_defaults = load_theme_defaults();
-    $default = $theme_defaults[$name] ?: $attributes['default'];
-    $value = get_theme_mod($name) ?: null;
-
-
-    echo 'THEME VAR' . $name;
-    echo '<br/>';
-
-    print_r($attributes);
-    echo '<br/>';
-
-    if (!$value && !$attributes['implicit']) {
-
-      $value = $default;
-    }
-
-    if ($attributes['unit']) {
-      $value = $value . $attributes['unit'];
-    }
-
-    if ($value) {
-      $css.= <<<EOT
-  --$name: $value;
-
-EOT;
-    }
-  }
-
-  $css.= <<<EOT
-}
-
-EOT;
-
-  return $css;
-}
-
 
 function enqueue_theme_custom_css() {
   if (wp_doing_ajax() && $_GET['action'] === 'theme_resources') {
@@ -301,6 +339,20 @@ function enqueue_theme_custom_css() {
 add_action( 'wp_enqueue_scripts', 'enqueue_theme_custom_css', 99);
 add_action( 'enqueue_block_editor_assets', 'enqueue_theme_custom_css', 99);
 
+add_action('admin_init', function() {
+	global $theme_vars;
+
+  $url = get_template_directory_uri();
+
+  wp_register_script('themalize', $url . '/lib/js/themalize.js', array('jquery', 'wp-color-picker'));
+
+	wp_localize_script('themalize', 'ThemalizeSettings', [
+		'theme_vars_url' => admin_url( 'admin-ajax.php' ) . '?action=theme_vars',
+		'theme_vars' => json_encode($theme_vars)
+	]);
+
+  enqueue_theme_custom_css();
+}, 100);
 
 // Register sections
 add_action('customize_register', function($wp_customize) {
@@ -319,10 +371,28 @@ add_action('customize_register', function($wp_customize) {
     'priority' => 100
   ));
 
+	$wp_customize->add_section('content', array(
+    'title' => 'Content',
+    'priority' => 100
+  ));
+
+	$wp_customize->add_section('layout', array(
+    'title' => 'Layout',
+    'priority' => 100
+  ));
+
   $wp_customize->add_section('typography', array(
     'title' => 'Typography',
     'priority' => 100
   ));
+
+  $wp_customize->add_section('uncategorized', array(
+    'title' => 'Uncategorized',
+    'priority' => 100
+  ));
+
+  $wp_customize->register_control_type( 'Theme_Customize_Color_Control' );
+	$wp_customize->register_control_type( 'Theme_Customize_Control' );
 });
 
 
@@ -383,8 +453,6 @@ function load_theme_resources() {
 
 function theme_fetch_resource($url) {
   global $theme_resources;
-
-
 
   $local_directory_uris = array(
     [ get_stylesheet_directory_uri(), get_stylesheet_directory() ],
@@ -571,7 +639,8 @@ function get_theme_resources() {
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_HEADER, 0);
     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
-    curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (http://www.googlebot.com/bot.html)');
+    // curl_setopt($ch, CURLOPT_USERAGENT, 'Googlebot/2.1 (http://www.googlebot.com/bot.html)');
+    curl_setopt($ch, CURLOPT_USERAGENT, 'Themalizer/0.1 (http://www.googlebot.com/bot.html)');
     curl_setopt($ch, CURLOPT_FRESH_CONNECT, 1);
     // curl_setopt($ch, CURLOPT_TIMEOUT, 100); // Removed
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); // Added
@@ -620,6 +689,21 @@ function ajax_theme_resources() {
 add_action( 'wp_ajax_nopriv_theme_resources', 'ajax_theme_resources');
 add_action( 'wp_ajax_theme_resources', 'ajax_theme_resources');
 
+add_action( 'wp_ajax_theme_vars', function() {
+	$data = isset($_POST['data']) ? $_POST['data'] : array();
+
+	$theme_vars = x_get_theme_vars($data);
+
+	$output = json_encode($theme_vars);
+
+	header('Content-Type: application/json');
+
+	echo $output;
+
+	// Don't forget to stop execution afterward.
+	wp_die();
+});
+
 
 function load_theme_manifest($file) {
   ob_start();
@@ -628,7 +712,18 @@ function load_theme_manifest($file) {
   ob_end_clean();
 
   if ($content) {
-    return json_decode($content, true);
+    $manifest = json_decode($content, true);
+
+		foreach ($manifest as $key => $value) {
+		  register_theme_var($key, $value);
+
+		  if (!isset($value['implicit']) || !$value['implicit']) {
+		    register_theme_option($key, $value);
+		  }
+		}
+
+
+		return $manifest;
   }
 
   return array();
@@ -639,37 +734,20 @@ function get_theme_defaults() {
 
   $defaults = array();
   foreach ($theme_resources as $theme_resource) {
-
-    /*
-    echo 'GET DEFAULT VaLUES: ' . $theme_resource['url'];
-    echo '<br/>';
-    */
-
     $defaults = array_merge($defaults, $theme_resource['vars']);
   }
 
   return $defaults;
 }
 
-function x_get_theme_vars() {
+function x_get_theme_vars($custom = array()) {
   global $theme_vars;
 
   $defaults = get_theme_defaults();
-  /*
-  echo '<pre>';
-  var_dump($defaults);
-
-  echo '</pre>';
-
-  exit;*/
-
   $result = array();
 
-
   // Process regular vars
-//  echo 'process regular vars<br/>';
-
-  foreach ($theme_vars as $key => $data) {
+	foreach ($theme_vars as $key => $data) {
     // $value = isset($data['value']) ? $data['value'] : $data['default'];
     $value = isset($defaults[$key]) ? $defaults[$key] : $data['value'];
     $implicit = isset($data['implicit']) ? $data['implicit'] : false;
@@ -682,7 +760,15 @@ function x_get_theme_vars() {
         }
 
         // Go ahead
-        $value = get_theme_mod($key);
+
+				// Custom vars override theme mods
+				if (isset($custom[$key])) {
+					// echo 'CUSTOM KEY: ' . $key;
+					// echo 'CUSTOM VALUE: ' . $custom[$key];
+					$value = $custom[$key] ?: $value;
+				} else {
+					$value = get_theme_mod($key, $value);
+				}
 
         if ($value) {
           $result[$key] = $value;
@@ -695,10 +781,7 @@ function x_get_theme_vars() {
     }
   }
 
-
   // Process implicit vars
-  // echo 'process implicit vars<br/>';
-
   $pattern = '~^\s*var\s*\(\s*--([a-zA-Z_-]*)\s*\)\s*$~';
 
   foreach ($theme_vars as $key => $data) {
@@ -709,25 +792,10 @@ function x_get_theme_vars() {
       $source_default = $theme_vars[$source_var]['default'];
       $source_value = $result[$source_var];
 
-      /*
-      echo 'IMPLICIT VAR: ' . $key . ' SOURCE VAR: ' . $source_var . ' VALUE: ' . $source_value;
-      echo '<br/>';
-      */
-      $c = 0;
-
       while (preg_match($pattern, $source_value, $matches))  {
         $source_var = $matches[1];
         $source_value = $result[$source_var] ?: $source_value;
         $source_default = $theme_vars[$source_var]['default'] ?: $source_default;
-
-        /*
-        $c++;
-
-        if ($c > 10) {
-          echo 'BREAK';
-          break;
-        }
-        */
       }
 
       if ($data['filter']) {
@@ -746,24 +814,6 @@ function x_get_theme_vars() {
 
   return $result;
 }
-
-$manifest = load_theme_manifest(get_template_directory() . '/dist/bootstrap.css.json');
-
-foreach ($manifest as $key => $value) {
-  # code...
-  register_theme_var($key, $value);
-
-}
-
-
-
-
-/*
-$url = admin_url( 'admin-ajax.php' );
-echo $url;
-exit;
-*/
-
 
 add_filter('theme_implicit_darken', function($value, $amount, $data, $source) {
   return adjustBrightness($value, intval($amount) * -1);
@@ -810,3 +860,31 @@ EOT;
 
   return $css;
 }
+
+
+
+
+//
+// add_filter('astra_color_palettes', 'intelliwolf_custom_palettes');
+//
+// function intelliwolf_custom_palettes($palettes) {
+//   $palettes = array(
+//     '#0000ff',
+//     '#FFFFFF',
+//     '#F1C40F',
+//     '#666A86',
+//     '#C5AFA4',
+//     '#CC7E85',
+//     '#CF4D6F',
+//     '#8FA998',
+//     '#666A86',
+//     '#C5AFA4',
+//     '#CC7E85',
+//     '#CF4D6F',
+//     '#8FA998'
+//   );
+//   return $palettes;
+// }
+
+
+load_theme_manifest(get_template_directory() . '/dist/bootstrap.css.json');

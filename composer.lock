@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "08c01c20d106c40f509cb98f8b0e3aec",
+    "content-hash": "371e9a5e9450accd5595adac74ae9661",
     "packages": [
         {
             "name": "composer/installers",
@@ -247,6 +247,24 @@
             "homepage": "https://wordpress.org/plugins/customizer-reset-by-wpzoom/"
         },
         {
+            "name": "wpackagist-plugin/easy-google-fonts",
+            "version": "1.4.4",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/easy-google-fonts/",
+                "reference": "trunk"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/easy-google-fonts.zip?timestamp=1564916315"
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/easy-google-fonts/"
+        },
+        {
             "name": "wpackagist-plugin/fontmeister",
             "version": "1.08",
             "source": {
@@ -263,6 +281,60 @@
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/fontmeister/"
+        },
+        {
+            "name": "wpackagist-plugin/fonto",
+            "version": "1.0.5",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/fonto/",
+                "reference": "tags/1.0.5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/fonto.1.0.5.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/fonto/"
+        },
+        {
+            "name": "wpackagist-plugin/google-typography",
+            "version": "1.1.2",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/google-typography/",
+                "reference": "tags/1.1.2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/google-typography.1.1.2.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/google-typography/"
+        },
+        {
+            "name": "wpackagist-plugin/use-any-font",
+            "version": "5.3",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/use-any-font/",
+                "reference": "tags/5.3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/use-any-font.5.3.zip"
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/use-any-font/"
         },
         {
             "name": "wpackagist-plugin/wordpress-importer",

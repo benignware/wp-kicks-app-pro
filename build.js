@@ -190,7 +190,7 @@ const build = async(entry, dest = 'dist') => {
   */
 
   const include = [
-    'font-family-base'
+    // 'font-family-base'
   ];
 
   const exclude = [
@@ -447,7 +447,9 @@ const build = async(entry, dest = 'dist') => {
       }
 
       if (type === 'SassList') {
-        if (!expression.match(/^\s*\(/) && value.every((item) => item.type === 'SassString') && value.some((item) => [ 'sans-serif', 'serif', 'monospace' ].includes(item.value))) {
+        if (!expression.match(/^\s*\(/) && value.every((item) => item.type === 'SassString') && value.some((item) => [
+          'sans-serif', 'serif', 'monospace', '-apply-system'
+        ].includes(item.value)) || key.match(/font-family$/)) {
           raw = value.map((item) => item.value).join(`${result.separator} `);
         }
       }
@@ -532,6 +534,8 @@ const build = async(entry, dest = 'dist') => {
         }
       }
 
+
+
       if (expr.match(/^var\s*\(--[a-z_-]*\)$/)) {
         value = expr;
       } else {
@@ -551,6 +555,14 @@ const build = async(entry, dest = 'dist') => {
             }
           };
         }
+      }
+
+      const isFont = typeof value === 'string' && (
+        value.match(/(?:sans-serif|serif|monospace|-apple-system)/) || key.match(/font-family$/)
+      );
+
+      if (isFont) {
+        type = 'font';
       }
 
       return {

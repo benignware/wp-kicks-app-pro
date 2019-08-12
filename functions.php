@@ -2,7 +2,8 @@
 
 
 require_once 'inc/customizer_2.php';
-require_once 'inc/customize-theme.php';
+// require_once 'inc/customize-theme.php';
+require_once 'lib/themalizer.php';
 require_once 'inc/template-tags.php';
 require_once 'inc/template-functions.php';
 require_once 'inc/icon-functions.php';
@@ -33,7 +34,7 @@ require_once 'inc/theme-tags.php';
 		return array_merge($carry, glob($item . '/img/custom-logo.{jpg,png,gif,svg}', GLOB_BRACE));
 	}, array());
 
-// $custom_logo = glob(get_stylesheet_directory() . '/img/custom-logo.{jpg,png,gif,svg}', GLOB_BRACE);
+
 
 
 
@@ -204,6 +205,7 @@ add_filter( 'get_search_form', function( $form ) {
 }, 11);
 */
 
+/*
 register_theme_options([
   'primary' => [
     'label' => __('Primary'),
@@ -297,7 +299,7 @@ register_theme_options([
     'section' => 'typography',
     'type' => 'color'
   ],
-  /*
+
   'font-family-sans-serif' => [
     'default' => 'Times New Roman',
     'control' => [
@@ -361,8 +363,9 @@ register_theme_options([
       'type' => 'color',
       'section' => 'forms'
     ]
-  ]*/
+  ]
 ]);
+*/
 
 if (function_exists('register_swiper_theme')) {
 

@@ -1,6 +1,6 @@
 {
   "name": "wp-kicks-app-pro",
-  "version": "0.1.0-beta.12",
+  "version": "0.1.0-beta.13",
   "description": "Wordpress theme",
   "private": true,
   "main": "dist/main.js",
@@ -32,6 +32,7 @@
     "postcss-focus-within": "^3.0.0",
     "query-ast": "^1.0.2",
     "rtlcss": "^2.4.0",
+    "run-p": "0.0.0",
     "sass-extract": "^2.1.0",
     "sass-variable-parser": "^1.2.2",
     "scss-parser": "^1.0.3"
@@ -53,13 +54,6 @@
     "extends @wordpress/browserslist-config"
   ],
   "scripts": {
-    "xbuild:style": "node-sass style.scss style.css --include-path node_modules --output-style expanded && postcss -r style.css",
-    "xbuild:bootstrap-css": "node ./build.js",
-    "xbuild:style-editor": "node-sass style-editor.scss style-editor.css --output-style expanded && postcss -r style-editor.css",
-    "xbuild:style-editor-customizer": "node-sass style-editor-customizer.scss style-editor-customizer.css --output-style expanded && postcss -r style-editor-customizer.css",
-    "xbuild:rtl": "rtlcss style.css style-rtl.css",
-    "xbuild:print": "node-sass print.scss print.css --output-style expanded && postcss -r print.css",
-    "xbuild": "run-p \"build:*\"",
     "watch": "chokidar \"**/*.scss\" -c \"npm run build\" --initial",
     "build:bootstrap-js": "cpx './node_modules/bootstrap/dist/js/**/*.*' dist/bootstrap/js",
     "build:bootstrap-css": "node ./build.js",

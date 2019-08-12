@@ -257,17 +257,17 @@
   "font-family-sans-serif": {
     "default": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji",
     "value": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji",
-    "type": "string"
+    "type": "font"
   },
   "font-family-monospace": {
     "default": "SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
     "value": "SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace",
-    "type": "string"
+    "type": "font"
   },
   "font-family-base": {
     "default": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji",
     "value": "var(--font-family-sans-serif)",
-    "type": "string"
+    "type": "font"
   },
   "font-size-base": {
     "default": "1rem",
@@ -330,14 +330,14 @@
     "type": "number"
   },
   "headings-font-family": {
-    "default": "initial",
-    "value": "initial",
-    "type": "string"
+    "default": "-apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif, Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji",
+    "value": "var(--font-family-base)",
+    "type": "font"
   },
   "headings-color": {
-    "default": "initial",
-    "value": "initial",
-    "type": "string"
+    "default": "rgba(33,37,41,1)",
+    "value": "var(--body-color)",
+    "type": "color"
   },
   "display1-size": {
     "default": "6rem",
@@ -1885,9 +1885,9 @@
     "type": "color"
   },
   "popover-header-color": {
-    "default": "initial",
+    "default": "rgba(33,37,41,1)",
     "value": "var(--headings-color)",
-    "type": "string"
+    "type": "color"
   },
   "popover-header-padding-y": {
     "default": "0.5rem",

@@ -1,6 +1,6 @@
 {
   "name": "benignware/wp-kicks-app-pro",
-  "version": "0.1.0-beta.12",
+  "version": "0.1.0-beta.13",
   "type": "wordpress-theme",
   "license": "MIT",
   "description": "Wordpress Kickstarter Theme",
@@ -96,7 +96,11 @@
     "wpackagist-plugin/wordpress-seo": ">=9.7",
     "wpackagist-plugin/wordpress-importer": ">=0.6.4",
     "wpackagist-plugin/fontmeister": ">=1.08",
-    "wpackagist-plugin/custom-archives": ">=3.0.2"
+    "wpackagist-plugin/easy-google-fonts": ">=1.4.4",
+    "wpackagist-plugin/custom-archives": ">=3.0.2",
+    "wpackagist-plugin/fonto": ">=1.0.4",
+    "wpackagist-plugin/use-any-font": ">=5.3",
+    "wpackagist-plugin/google-typography": ">=1.1.2"
   },
   "scripts": {
     "post-autoload-dump": [

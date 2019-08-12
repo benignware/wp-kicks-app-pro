@@ -7059,8 +7059,8 @@ a.text-dark:hover, a.text-dark:focus {
   --h5-font-size: 1.25rem;
   --h6-font-size: var(--font-size-base);
   --headings-margin-bottom: 0.5rem;
-  --headings-font-family: initial;
-  --headings-color: initial;
+  --headings-font-family: var(--font-family-base);
+  --headings-color: var(--body-color);
   --display1-size: 6rem;
   --display2-size: 5.5rem;
   --display3-size: 4.5rem;
