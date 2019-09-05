@@ -340,6 +340,10 @@ function enqueue_theme_custom_css() {
   }
 
   $css = x_get_theme_custom_css();
+	// echo '<pre><code>';
+	// echo $css;
+	// echo '</code></pre>';
+	// exit;
 
   wp_register_style( 'kicks-app-custom-style', false );
   wp_enqueue_style( 'kicks-app-custom-style' );
@@ -620,36 +624,34 @@ function get_theme_vars() {
 
 function get_theme_resources() {
   global $theme_resources;
+	global $wp_customize;
+	global $pagenow;
 
   if (isset($theme_resources)) {
-		// echo 'RESOURCES IS SET';
     return $theme_resources;
   }
 
-	// if (!is_admin()) {
-	// 	$theme_resources = load_theme_resources();
-	//
-	// 	if ($theme_resources) {
-	// 		return $theme_resources;
-	// 	}
-	// }
+	if (!is_admin() && !is_customize_preview()) {
+		$theme_resources = load_theme_resources();
 
+		if ($theme_resources) {
+			return $theme_resources;
+		}
+	}
+
+	if (!isset($wp_customize) && $pagenow !== 'post.php' && !is_customize_preview()) {
+		// We only need resources in Customizer and Editpage
+		return array();
+	}
+
+	// Use a background request to fetch front-end resources
   $url = admin_url( 'admin-ajax.php' ) . '?action=theme_resources';
   $urlinfo = parse_url($url);
 	//
   $host = $_SERVER['SERVER_NAME'];
 	$port = $_SERVER['SERVER_PORT'] && substr($_SERVER['SERVER_PORT'], 0, 1) !== '8' ? $_SERVER['SERVER_PORT'] : '';
 
-	//
   $url = $urlinfo['scheme'] . '://' . $host . ($port ? ':' . $port : '') . $urlinfo['path'] . ($urlinfo['query'] ? '?' . $urlinfo['query'] : '');
-	//
-  // */
-	//
-  // $host = $_SERVER['SERVER_NAME'];
-	// $host = $_SERVER['SERVER_NAME'];
-	//
-	// // $host = $_SERVER['SERVER_ADDR'];
-  // $url = $urlinfo['scheme'] . '://' . $host . $urlinfo['path'] . ($urlinfo['query'] ? '?' . $urlinfo['query'] : '');
 
   if (function_exists('curl_init')) {
     $ch = curl_init();
@@ -692,22 +694,21 @@ function get_theme_resources() {
 
 function ajax_theme_resources() {
   global $wp_styles;
-    // Make your response and echo it.
 
-    ob_start();
-    wp_head();
-    ob_end_clean();
+  ob_start();
+  wp_head();
+  ob_end_clean();
 
-    $resources = load_theme_resources();
+  $resources = load_theme_resources();
 
-    $output = json_encode($resources);
+  $output = json_encode($resources);
 
-    header('Content-Type: application/json');
+  header('Content-Type: application/json');
 
-    echo $output;
+  echo $output;
 
-    // Don't forget to stop execution afterward.
-    wp_die();
+  // Don't forget to stop execution afterward.
+  wp_die();
 }
 
 add_action( 'wp_ajax_nopriv_theme_resources', 'ajax_theme_resources');
@@ -902,8 +903,6 @@ EOT;
 
   return $css;
 }
-
-
 
 
 //
